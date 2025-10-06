@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://b4x0bfwvet13b"]
+
+[ext_resource type="Script" uid="uid://c1turmvey1ld7" path="res://Szenen/RoomCreator/RoomCreator.cs" id="1_8d811"]
+[ext_resource type="Texture2D" uid="uid://clmnwutju2sha" path="res://icon.svg" id="2_f0vci"]
+
+[node name="RoomCreator" type="PanelContainer"]
+offset_right = 1920.0
+offset_bottom = 1080.0
+script = ExtResource("1_8d811")
+
+[node name="FileDialog" type="FileDialog" parent="."]
+oversampling_override = 1.0
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 2
+texture = ExtResource("2_f0vci")
+stretch_mode = 5
+
+[node name="GridContainer" type="GridContainer" parent="."]
+layout_mode = 2
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0
