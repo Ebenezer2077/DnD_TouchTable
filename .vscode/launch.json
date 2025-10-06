@@ -10,10 +10,10 @@
             "request": "launch",
             "preLaunchTask": "build",
             "program":"O:/Godot_v4.5-stable_mono_win64/Godot_v4.5-stable_mono_win64.exe",
-            "cwd":"${workspaceFolder}",
+            "cwd":"C:/Users/Metal Machine/DnD_TouchTable/DnD_NextGen",
             "console": "internalConsole",
             "stopAtEntry": false,
-            "args": ["--path","${workspaceRoot}"]
+            "args": ["--path","C:/Users/Metal Machine/DnD_TouchTable/DnD_NextGen"]
         }
     ]
 }
