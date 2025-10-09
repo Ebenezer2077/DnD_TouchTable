@@ -46,33 +46,25 @@ public partial class RoomCreator : PanelContainer
     private void AdjustRows(int amount)
     {
         rows += amount;
-        foreach (var button in gridContainer.GetChildren())
-        {
-            gridContainer.RemoveChild(button);
-        }
-        for (int i = 0; i < rows * columns; i++)
-        {
-            var button = GenerateGridButton();
-            gridContainer.AddChild(button);
-        }
+        RefreshContainer();
     }
     private void AdjustColumns(int amount)
     {
         columns += amount;
         gridContainer.Columns = columns;
+        RefreshContainer();
+    }
+
+    private void RefreshContainer()
+    {
         foreach (var button in gridContainer.GetChildren())
         {
             gridContainer.RemoveChild(button);
         }
         for (int i = 0; i < rows * columns; i++)
         {
-            var button = GenerateGridButton();
+            var button = GD.Load<PackedScene>("res://Szenen/GridButton/GridButton.tscn").Instantiate<GridButton>();
             gridContainer.AddChild(button);
         }
-    }
-    
-    private Button GenerateGridButton()
-    {
-        return GD.Load<PackedScene>("res://Szenen/GridButton/GridButton.tscn").Instantiate<GridButton>();
     }
 }
