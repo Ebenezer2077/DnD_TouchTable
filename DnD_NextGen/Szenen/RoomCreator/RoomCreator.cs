@@ -26,6 +26,7 @@ public partial class RoomCreator : PanelContainer
         RemoveColumn = GetNode<Button>("MarginContainer/VBoxContainer/RemoveColumn");
         RemoveColumn.Pressed += () => AdjustColumns(-1);
         GridSize = GetNode<VSlider>("MarginContainer/VBoxContainer3/HBoxContainer/VSlider");
+        GridSize.ValueChanged += (value) => AdjustGridSize((int)value);
         GridSizeCount = GetNode<RichTextLabel>("MarginContainer/VBoxContainer3/RichTextLabel");
         AddRow = GetNode<Button>("MarginContainer/VBoxContainer2/AddRow");
         AddRow.Pressed += () => AdjustRows(1);
@@ -46,13 +47,25 @@ public partial class RoomCreator : PanelContainer
     private void AdjustRows(int amount)
     {
         rows += amount;
+        RowCount.Text = rows.ToString();
         RefreshContainer();
     }
     private void AdjustColumns(int amount)
     {
         columns += amount;
+        ColumnCount.Text = columns.ToString();
         gridContainer.Columns = columns;
         RefreshContainer();
+    }
+
+    private void AdjustGridSize(int size)
+    {
+        buttonSize = size;
+        GridSizeCount.Text = size.ToString();
+        foreach (var button in gridContainer.GetChildren())
+        {
+            ((GridButton)button).CustomMinimumSize = new Vector2(buttonSize, buttonSize);
+        }
     }
 
     private void RefreshContainer()

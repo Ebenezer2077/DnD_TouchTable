@@ -23,9 +23,6 @@ layout_mode = 2
 theme_override_constants/h_separation = 0
 theme_override_constants/v_separation = 0
 
-[node name="GridButton" parent="GridContainer" instance=ExtResource("3_34cxu")]
-layout_mode = 2
-
 [node name="GridButton2" parent="GridContainer" instance=ExtResource("3_34cxu")]
 layout_mode = 2
 
