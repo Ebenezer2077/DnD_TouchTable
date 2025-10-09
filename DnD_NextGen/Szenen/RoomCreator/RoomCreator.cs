@@ -77,6 +77,7 @@ public partial class RoomCreator : PanelContainer
         for (int i = 0; i < rows * columns; i++)
         {
             var button = GD.Load<PackedScene>("res://Szenen/GridButton/GridButton.tscn").Instantiate<GridButton>();
+            button.CustomMinimumSize = new Vector2(buttonSize, buttonSize);
             gridContainer.AddChild(button);
         }
     }
