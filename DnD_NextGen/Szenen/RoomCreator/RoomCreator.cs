@@ -2,21 +2,24 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public partial class RoomCreator : PanelContainer
+public partial class RoomCreator : Panel
 {
     private GridContainer gridContainer;
     private Button AddColumn;
     private RichTextLabel ColumnCount;
     private Button RemoveColumn;
     private VSlider GridSize;
+    private RichTextLabel GridsizeLabel;
     private RichTextLabel GridSizeCount;
     private Button AddRow;
     private RichTextLabel RowCount;
     private Button RemoveRow;
+    private Button PositionGrid;
 
     private int columns = 1;
     private int rows = 1;
     private int buttonSize = 50;
+    private bool isGridPositioned = false;
     public override void _Ready()
     {
         gridContainer = GetNode<GridContainer>("GridContainer");
@@ -27,6 +30,7 @@ public partial class RoomCreator : PanelContainer
         RemoveColumn.Pressed += () => AdjustColumns(-1);
         GridSize = GetNode<VSlider>("MarginContainer/VBoxContainer3/HBoxContainer/VSlider");
         GridSize.ValueChanged += (value) => AdjustGridSize((int)value);
+        GridsizeLabel = GetNode<RichTextLabel>("MarginContainer/VBoxContainer3/HBoxContainer/RichTextLabel");
         GridSizeCount = GetNode<RichTextLabel>("MarginContainer/VBoxContainer3/RichTextLabel");
         AddRow = GetNode<Button>("MarginContainer/VBoxContainer2/AddRow");
         AddRow.Pressed += () => AdjustRows(1);
@@ -35,6 +39,9 @@ public partial class RoomCreator : PanelContainer
         RemoveRow.Pressed += () => AdjustRows(-1);
 
         gridContainer.Columns = columns;
+
+        PositionGrid = GetNode<Button>("MarginContainer/Position Grid");
+        PositionGrid.Pressed += () => PositionGridFunc();
     }
     public override void _Input(InputEvent @event)
     {
@@ -42,8 +49,41 @@ public partial class RoomCreator : PanelContainer
         {
             GetTree().ChangeSceneToFile("res://Szenen/MainMenu/MainMenu.tscn");
         }
+        if (isGridPositioned && @event is InputEventMouseButton inputEventMouseButton && inputEventMouseButton.IsPressed())
+        {
+            PositionGridFunc();
+        }
     }
 
+    public override void _Process(double delta)
+    {
+        if(isGridPositioned)
+        {
+            gridContainer.Position = GetViewport().GetMousePosition();
+        } else
+        {
+            //gridContainer.Position = new Vector2(1200, 800);
+        }
+    }
+    private void PositionGridFunc()
+    {
+        isGridPositioned = !isGridPositioned;
+        ToggleControlls(!isGridPositioned);
+    }
+    
+    private void ToggleControlls(bool enable)
+    {
+        AddColumn.Visible = enable;
+        ColumnCount.Visible = enable;
+        RemoveColumn.Visible = enable;
+        GridSize.Visible = enable;
+        GridsizeLabel.Visible = enable;
+        GridSizeCount.Visible = enable;
+        AddRow.Visible = enable;
+        RowCount.Visible = enable;
+        RemoveRow.Visible = enable;
+        PositionGrid.Visible = enable;
+    }
     private void AdjustRows(int amount)
     {
         rows += amount;

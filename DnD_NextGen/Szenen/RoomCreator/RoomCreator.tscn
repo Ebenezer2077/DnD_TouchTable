@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://csvr5l63qofkw" path="res://dnd example map.jpg" id="2_f0vci"]
 [ext_resource type="PackedScene" uid="uid://i3m58w3pqsva" path="res://Szenen/GridButton/GridButton.tscn" id="3_34cxu"]
 
-[node name="RoomCreator" type="PanelContainer"]
+[node name="RoomCreator" type="Panel"]
 offset_right = 1920.0
 offset_bottom = 1080.0
 script = ExtResource("1_8d811")
@@ -13,13 +13,17 @@ script = ExtResource("1_8d811")
 oversampling_override = 1.0
 
 [node name="TextureRect" type="TextureRect" parent="."]
-layout_mode = 2
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
 texture = ExtResource("2_f0vci")
 expand_mode = 1
 stretch_mode = 5
 
 [node name="GridContainer" type="GridContainer" parent="."]
-layout_mode = 2
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
 theme_override_constants/h_separation = 0
 theme_override_constants/v_separation = 0
 
@@ -27,8 +31,9 @@ theme_override_constants/v_separation = 0
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 2
-size_flags_horizontal = 0
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
@@ -112,3 +117,10 @@ autowrap_mode = 0
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 text = "Remove Row"
+
+[node name="Position Grid" type="Button" parent="MarginContainer"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+text = "Position Grid"
