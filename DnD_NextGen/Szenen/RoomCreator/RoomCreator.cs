@@ -1,9 +1,12 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 
 public partial class RoomCreator : Panel
 {
+    private Button SaveRoom;
+    private FileDialog fileDialog;
     private GridContainer gridContainer;
     private Button AddColumn;
     private RichTextLabel ColumnCount;
@@ -15,6 +18,8 @@ public partial class RoomCreator : Panel
     private RichTextLabel RowCount;
     private Button RemoveRow;
     private Button PositionGrid;
+    private Button LoadMap;
+    private TextureRect Map;
 
     private int columns = 1;
     private int rows = 1;
@@ -22,6 +27,24 @@ public partial class RoomCreator : Panel
     private bool isGridPositioned = false;
     public override void _Ready()
     {
+        SaveRoom = GetNode<Button>("MarginContainer/VBoxContainer4/SaveRoom");
+        SaveRoom.Pressed += () =>
+        {
+            var room = new RoomTemplate(gridContainer.GlobalPosition, new Vector2(rows, columns), buttonSize);
+            var data = JsonSerializer.Serialize(room);
+            var file = FileAccess.Open("res://SavedRooms/Test/data.json", FileAccess.ModeFlags.Write);
+            file.StoreLine(data);
+        };
+        Map = GetNode<TextureRect>("TextureRect");
+        fileDialog = GetNode<FileDialog>("FileDialog");
+        fileDialog.Access = FileDialog.AccessEnum.Filesystem;
+        fileDialog.FileMode = FileDialog.FileModeEnum.OpenFile;
+        fileDialog.FileSelected += (path) =>
+        {
+            var image = new Image();
+            var err = image.Load(path);
+            Map.Texture = ImageTexture.CreateFromImage(image);
+        };
         gridContainer = GetNode<GridContainer>("GridContainer");
         AddColumn = GetNode<Button>("MarginContainer/VBoxContainer/AddColumn");
         AddColumn.Pressed += () => AdjustColumns(1);
@@ -40,8 +63,13 @@ public partial class RoomCreator : Panel
 
         gridContainer.Columns = columns;
 
-        PositionGrid = GetNode<Button>("MarginContainer/Position Grid");
+        PositionGrid = GetNode<Button>("MarginContainer/VBoxContainer4/Position Grid");
         PositionGrid.Pressed += () => PositionGridFunc();
+        LoadMap = GetNode<Button>("MarginContainer/VBoxContainer4/Load Map");
+        LoadMap.Pressed += () =>
+        {
+            fileDialog.Visible = true;
+        };
     }
     public override void _Input(InputEvent @event)
     {

@@ -1,7 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://b4x0bfwvet13b"]
+[gd_scene load_steps=3 format=3 uid="uid://b4x0bfwvet13b"]
 
 [ext_resource type="Script" uid="uid://c1turmvey1ld7" path="res://Szenen/RoomCreator/RoomCreator.cs" id="1_8d811"]
-[ext_resource type="Texture2D" uid="uid://csvr5l63qofkw" path="res://dnd example map.jpg" id="2_f0vci"]
 [ext_resource type="PackedScene" uid="uid://i3m58w3pqsva" path="res://Szenen/GridButton/GridButton.tscn" id="3_34cxu"]
 
 [node name="RoomCreator" type="Panel"]
@@ -16,7 +15,6 @@ oversampling_override = 1.0
 layout_mode = 0
 offset_right = 1920.0
 offset_bottom = 1080.0
-texture = ExtResource("2_f0vci")
 expand_mode = 1
 stretch_mode = 5
 
@@ -118,9 +116,25 @@ custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 text = "Remove Row"
 
-[node name="Position Grid" type="Button" parent="MarginContainer"]
+[node name="VBoxContainer4" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+theme_override_constants/separation = 10
+
+[node name="Position Grid" type="Button" parent="MarginContainer/VBoxContainer4"]
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 text = "Position Grid"
+
+[node name="Load Map" type="Button" parent="MarginContainer/VBoxContainer4"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+text = "Load Map"
+
+[node name="SaveRoom" type="Button" parent="MarginContainer/VBoxContainer4"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+text = "save Room"
