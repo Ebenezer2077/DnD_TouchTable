@@ -70,7 +70,6 @@ public partial class RoomCreator : Panel
             fileDialog.Visible = true;
         };
 
-        textFieldPopup.onCancel += () => textFieldPopup.Visible = false;
         textFieldPopup.onConfirm += SaveRoomFunc;
     }
     public override void _Input(InputEvent @event)
@@ -102,7 +101,6 @@ public partial class RoomCreator : Panel
         var file = FileAccess.Open(path + "/data.json", FileAccess.ModeFlags.Write);
         file.StoreLine(data);
         file.Close();
-        textFieldPopup.Visible = false;
     }
     private void PositionGridFunc()
     {
