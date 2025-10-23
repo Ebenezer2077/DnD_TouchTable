@@ -31,9 +31,13 @@ public partial class RoomCreator : Panel
         SaveRoom.Pressed += () =>
         {
             var room = new RoomTemplate(gridContainer.GlobalPosition, new Vector2(rows, columns), buttonSize);
-            var data = JsonSerializer.Serialize(room);
+            var data = JsonSerializer.Serialize(room, new JsonSerializerOptions {IncludeFields = true});
+            DirAccess.MakeDirAbsolute("res://SavedRooms/Test");
             var file = FileAccess.Open("res://SavedRooms/Test/data.json", FileAccess.ModeFlags.Write);
+            var test = FileAccess.GetOpenError();
             file.StoreLine(data);
+            file.Close();
+            //needs fixing
         };
         Map = GetNode<TextureRect>("TextureRect");
         fileDialog = GetNode<FileDialog>("FileDialog");
