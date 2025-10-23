@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://b4x0bfwvet13b"]
+[gd_scene load_steps=4 format=3 uid="uid://b4x0bfwvet13b"]
 
 [ext_resource type="Script" uid="uid://c1turmvey1ld7" path="res://Szenen/RoomCreator/RoomCreator.cs" id="1_8d811"]
 [ext_resource type="PackedScene" uid="uid://i3m58w3pqsva" path="res://Szenen/GridButton/GridButton.tscn" id="3_34cxu"]
+[ext_resource type="PackedScene" uid="uid://23t188lvdiel" path="res://Szenen/TextFieldPopup/TextFieldPopup.tscn" id="3_djl0u"]
 
 [node name="RoomCreator" type="Panel"]
 offset_right = 1920.0
@@ -138,3 +139,18 @@ text = "Load Map"
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 text = "save Room"
+
+[node name="TextFieldPopup" parent="." instance=ExtResource("3_djl0u")]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -210.0
+offset_top = -72.0
+offset_right = 210.0
+offset_bottom = 72.0
+grow_horizontal = 2
+grow_vertical = 2

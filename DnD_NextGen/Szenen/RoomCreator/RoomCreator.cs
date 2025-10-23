@@ -1,12 +1,11 @@
 using Godot;
-using System;
-using System.Collections.Generic;
 using System.Text.Json;
 
 public partial class RoomCreator : Panel
 {
     private Button SaveRoom;
     private FileDialog fileDialog;
+    private TextFieldPopup textFieldPopup;
     private GridContainer gridContainer;
     private Button AddColumn;
     private RichTextLabel ColumnCount;
@@ -27,18 +26,9 @@ public partial class RoomCreator : Panel
     private bool isGridPositioned = false;
     public override void _Ready()
     {
+        textFieldPopup = GetNode<TextFieldPopup>("TextFieldPopup");
         SaveRoom = GetNode<Button>("MarginContainer/VBoxContainer4/SaveRoom");
-        SaveRoom.Pressed += () =>
-        {
-            var room = new RoomTemplate(gridContainer.GlobalPosition, new Vector2(rows, columns), buttonSize);
-            var data = JsonSerializer.Serialize(room, new JsonSerializerOptions {IncludeFields = true});
-            DirAccess.MakeDirAbsolute("res://SavedRooms/Test");
-            var file = FileAccess.Open("res://SavedRooms/Test/data.json", FileAccess.ModeFlags.Write);
-            var test = FileAccess.GetOpenError();
-            file.StoreLine(data);
-            file.Close();
-            //needs fixing
-        };
+        SaveRoom.Pressed += () => textFieldPopup.Visible = true;
         Map = GetNode<TextureRect>("TextureRect");
         fileDialog = GetNode<FileDialog>("FileDialog");
         fileDialog.Access = FileDialog.AccessEnum.Filesystem;
@@ -74,6 +64,9 @@ public partial class RoomCreator : Panel
         {
             fileDialog.Visible = true;
         };
+
+        textFieldPopup.onCancel += () => textFieldPopup.Visible = false;
+        textFieldPopup.onConfirm += SaveRoomFunc;
     }
     public override void _Input(InputEvent @event)
     {
@@ -86,16 +79,24 @@ public partial class RoomCreator : Panel
             PositionGridFunc();
         }
     }
-
     public override void _Process(double delta)
     {
-        if(isGridPositioned)
+        if (isGridPositioned)
         {
             gridContainer.Position = GetViewport().GetMousePosition();
-        } else
-        {
-            //gridContainer.Position = new Vector2(1200, 800);
         }
+    }
+    private void SaveRoomFunc(string name)
+    {
+        var path = "res://SavedRooms/" + name;
+        var room = new RoomTemplate(gridContainer.GlobalPosition, new Vector2(rows, columns), buttonSize);
+        var data = JsonSerializer.Serialize(room, new JsonSerializerOptions { IncludeFields = true });
+        DirAccess.MakeDirAbsolute(path);
+        Map.Texture.GetImage()?.SavePng(path + "/map.png");
+        var file = FileAccess.Open(path + "/data.json", FileAccess.ModeFlags.Write);
+        file.StoreLine(data);
+        file.Close();
+        textFieldPopup.Visible = false;
     }
     private void PositionGridFunc()
     {
