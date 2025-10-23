@@ -24,11 +24,16 @@ public partial class RoomCreator : Panel
     private int rows = 1;
     private int buttonSize = 50;
     private bool isGridPositioned = false;
+    private string name = "";
     public override void _Ready()
     {
         textFieldPopup = GetNode<TextFieldPopup>("TextFieldPopup");
         SaveRoom = GetNode<Button>("MarginContainer/VBoxContainer4/SaveRoom");
-        SaveRoom.Pressed += () => textFieldPopup.Visible = true;
+        SaveRoom.Pressed += () =>
+        {
+            if (name.Equals("")) textFieldPopup.Visible = true;
+            else SaveRoomFunc(name);
+        };
         Map = GetNode<TextureRect>("TextureRect");
         fileDialog = GetNode<FileDialog>("FileDialog");
         fileDialog.Access = FileDialog.AccessEnum.Filesystem;
@@ -88,11 +93,12 @@ public partial class RoomCreator : Panel
     }
     private void SaveRoomFunc(string name)
     {
+        this.name = name;
         var path = "res://SavedRooms/" + name;
-        var room = new RoomTemplate(gridContainer.GlobalPosition, new Vector2(rows, columns), buttonSize);
+        var room = new RoomTemplate(gridContainer.GlobalPosition, new Vector2(rows, columns), buttonSize, name);
         var data = JsonSerializer.Serialize(room, new JsonSerializerOptions { IncludeFields = true });
         DirAccess.MakeDirAbsolute(path);
-        Map.Texture.GetImage()?.SavePng(path + "/map.png");
+        Map.Texture?.GetImage()?.SavePng(path + "/map.png");
         var file = FileAccess.Open(path + "/data.json", FileAccess.ModeFlags.Write);
         file.StoreLine(data);
         file.Close();

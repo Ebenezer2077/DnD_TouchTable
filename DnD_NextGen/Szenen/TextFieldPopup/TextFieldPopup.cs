@@ -11,7 +11,7 @@ public partial class TextFieldPopup : PanelContainer
     public override void _Ready()
     {
         Cancel = GetNode<Button>("MarginContainer/VBoxContainer/HBoxContainer/Cancel");
-        Cancel.Pressed += onCancel;
+        Cancel.Pressed += () => onCancel?.Invoke();
         Confirm = GetNode<Button>("MarginContainer/VBoxContainer/HBoxContainer/Confirm");
         Confirm.Pressed += () => onConfirm?.Invoke(lineEdit.Text);
         lineEdit = GetNode<LineEdit>("MarginContainer/VBoxContainer/LineEdit");
