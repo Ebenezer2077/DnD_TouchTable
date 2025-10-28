@@ -19,8 +19,8 @@ public class LoadRoomTemplatesProvider
                 texture.SetSizeOverride(new Vector2I(200, 100));
                 list.Add((room, texture));
             } else {
-                var texture = new ImageTexture();
-                texture.SetSizeOverride(new Vector2I(200, 100));
+                var image = Image.CreateEmpty(200, 100, false, Image.Format.Rgba8);
+                var texture = ImageTexture.CreateFromImage(image);
                 list.Add((room, texture));
             }
         }
