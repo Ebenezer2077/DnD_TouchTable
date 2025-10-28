@@ -11,12 +11,12 @@ public partial class LoadRoomMenu : PanelContainer
         Cancel = GetNode<Button>("VBoxContainer/Cancel");
         Cancel.Pressed += () => Visible = false;
         RoomList = GetNode<ItemList>("VBoxContainer/ItemList");
-        InitRoomList();
         RoomList.ItemSelected += (i) => LoadRoom?.Invoke(RoomList.GetItemText((int)i));
     }
 
-    private void InitRoomList()
+    public void InitRoomList()
     {
+        RoomList.Clear();
         var roomList = LoadRoomTemplatesProvider.LoadAllRoomPreview();
         foreach (var room in roomList)
         {

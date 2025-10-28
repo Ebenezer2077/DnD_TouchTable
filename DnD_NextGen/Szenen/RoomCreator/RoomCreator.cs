@@ -74,7 +74,10 @@ public partial class RoomCreator : Panel
             fileDialog.Visible = true;
         };
         LoadRoom = GetNode<Button>("MarginContainer/VBoxContainer4/LoadRoom");
-        LoadRoom.Pressed += () => loadRoomMenu.Visible = true;
+        LoadRoom.Pressed += () => {
+            loadRoomMenu.Visible = true;
+            loadRoomMenu.InitRoomList();
+        };
 
         textFieldPopup.onConfirm += SaveRoomFunc;
     }
@@ -115,18 +118,21 @@ public partial class RoomCreator : Panel
     private void LoadRoomFunc(string name)
     {
         loadRoomMenu.Visible = false;
-        var room = LoadRoomTemplatesProvider.LoadRoom(name);
-        AdjustColumns((int)room.GridSize.X);
-        AdjustRows((int)room.GridSize.Y);
+        var roomData = LoadRoomTemplatesProvider.LoadRoom(name);
+        var room = roomData.Item1;
+        InitColumns((int)room.GridSize.X);
+        InitRows((int)room.GridSize.Y);
         AdjustGridSize(room.ButtonSize);
         AdjustGridPosition(room.GridPosition);
+        Map.Texture = roomData.Item2;
+        RefreshContainer();
     }
     private void PositionGridFunc()
     {
         isGridPositioned = !isGridPositioned;
         ToggleControlls(!isGridPositioned);
     }
-    
+
     private void ToggleControlls(bool enable)
     {
         AddColumn.Visible = enable;
@@ -139,6 +145,17 @@ public partial class RoomCreator : Panel
         RowCount.Visible = enable;
         RemoveRow.Visible = enable;
         PositionGrid.Visible = enable;
+    }
+    private void InitRows(int amount)
+    {
+        rows = amount;
+        RowCount.Text = rows.ToString();
+    }
+    private void InitColumns(int amount)
+    {
+        columns = amount;
+        ColumnCount.Text = columns.ToString();
+        gridContainer.Columns = columns;
     }
     private void AdjustRows(int amount)
     {
