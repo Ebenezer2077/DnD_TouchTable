@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dqu4lpblr40qx"]
+[gd_scene load_steps=3 format=3 uid="uid://dqu4lpblr40qx"]
 
 [ext_resource type="Script" uid="uid://fqhjtgvw0p2a" path="res://Szenen/MainMenu/MainMenu.cs" id="1_8bqfy"]
+[ext_resource type="PackedScene" uid="uid://d2qgxf0kjblny" path="res://Szenen/LoadRoomMenu/LoadRoomMenu.tscn" id="2_8qc63"]
 
 [node name="MainMenu" type="PanelContainer"]
 anchors_preset = 15
@@ -85,3 +86,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Load Room
 "
+
+[node name="LoadRoomMenu" parent="." instance=ExtResource("2_8qc63")]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
