@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://b4x0bfwvet13b"]
+[gd_scene load_steps=5 format=3 uid="uid://b4x0bfwvet13b"]
 
 [ext_resource type="Script" uid="uid://c1turmvey1ld7" path="res://Szenen/RoomCreator/RoomCreator.cs" id="1_8d811"]
 [ext_resource type="PackedScene" uid="uid://i3m58w3pqsva" path="res://Szenen/GridButton/GridButton.tscn" id="3_34cxu"]
 [ext_resource type="PackedScene" uid="uid://23t188lvdiel" path="res://Szenen/TextFieldPopup/TextFieldPopup.tscn" id="3_djl0u"]
+[ext_resource type="PackedScene" uid="uid://d2qgxf0kjblny" path="res://Szenen/LoadRoomMenu/LoadRoomMenu.tscn" id="4_djl0u"]
 
 [node name="RoomCreator" type="Panel"]
 offset_right = 1920.0
@@ -138,7 +139,13 @@ text = "Load Map"
 [node name="SaveRoom" type="Button" parent="MarginContainer/VBoxContainer4"]
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
-text = "save Room"
+text = "Save Room"
+
+[node name="LoadRoom" type="Button" parent="MarginContainer/VBoxContainer4"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+text = "Load Room
+"
 
 [node name="TextFieldPopup" parent="." instance=ExtResource("3_djl0u")]
 visible = false
@@ -154,3 +161,7 @@ offset_right = 210.0
 offset_bottom = 72.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="LoadRoomMenu" parent="." instance=ExtResource("4_djl0u")]
+visible = false
+layout_mode = 1

@@ -5,6 +5,7 @@ public partial class RoomCreator : Panel
 {
     private Button SaveRoom;
     private FileDialog fileDialog;
+    private LoadRoomMenu loadRoomMenu;
     private TextFieldPopup textFieldPopup;
     private GridContainer gridContainer;
     private Button AddColumn;
@@ -18,6 +19,7 @@ public partial class RoomCreator : Panel
     private Button RemoveRow;
     private Button PositionGrid;
     private Button LoadMap;
+    private Button LoadRoom;
     private TextureRect Map;
 
     private int columns = 1;
@@ -27,6 +29,8 @@ public partial class RoomCreator : Panel
     private string name = "";
     public override void _Ready()
     {
+        loadRoomMenu = GetNode<LoadRoomMenu>("LoadRoomMenu");
+        loadRoomMenu.LoadRoom += LoadRoomFunc;
         textFieldPopup = GetNode<TextFieldPopup>("TextFieldPopup");
         SaveRoom = GetNode<Button>("MarginContainer/VBoxContainer4/SaveRoom");
         SaveRoom.Pressed += () =>
@@ -69,6 +73,8 @@ public partial class RoomCreator : Panel
         {
             fileDialog.Visible = true;
         };
+        LoadRoom = GetNode<Button>("MarginContainer/VBoxContainer4/LoadRoom");
+        LoadRoom.Pressed += () => loadRoomMenu.Visible = true;
 
         textFieldPopup.onConfirm += SaveRoomFunc;
     }
@@ -87,8 +93,12 @@ public partial class RoomCreator : Panel
     {
         if (isGridPositioned)
         {
-            gridContainer.Position = GetViewport().GetMousePosition();
+            AdjustGridPosition(GetViewport().GetMousePosition());
         }
+    }
+    private void AdjustGridPosition(Vector2 Position)
+    {
+        gridContainer.Position = Position;
     }
     private void SaveRoomFunc(string name)
     {
@@ -101,6 +111,15 @@ public partial class RoomCreator : Panel
         var file = FileAccess.Open(path + "/data.json", FileAccess.ModeFlags.Write);
         file.StoreLine(data);
         file.Close();
+    }
+    private void LoadRoomFunc(string name)
+    {
+        loadRoomMenu.Visible = false;
+        var room = LoadRoomTemplatesProvider.LoadRoom(name);
+        AdjustColumns((int)room.GridSize.X);
+        AdjustRows((int)room.GridSize.Y);
+        AdjustGridSize(room.ButtonSize);
+        AdjustGridPosition(room.GridPosition);
     }
     private void PositionGridFunc()
     {

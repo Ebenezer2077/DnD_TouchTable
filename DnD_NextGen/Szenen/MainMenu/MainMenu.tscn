@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://dqu4lpblr40qx"]
+[gd_scene load_steps=2 format=3 uid="uid://dqu4lpblr40qx"]
 
 [ext_resource type="Script" uid="uid://fqhjtgvw0p2a" path="res://Szenen/MainMenu/MainMenu.cs" id="1_8bqfy"]
-[ext_resource type="PackedScene" uid="uid://d2qgxf0kjblny" path="res://Szenen/LoadRoomMenu/LoadRoomMenu.tscn" id="2_8qc63"]
 
 [node name="MainMenu" type="PanelContainer"]
 anchors_preset = 15
@@ -49,46 +48,3 @@ theme_override_font_sizes/normal_font_size = 47
 text = "DnD NextGen"
 fit_content = true
 autowrap_mode = 0
-
-[node name="RoomOptions" type="PanelContainer" parent="."]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="MarginContainer" type="MarginContainer" parent="RoomOptions"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="RoomOptions/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="RichTextLabel" type="RichTextLabel" parent="RoomOptions/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "Do you want to create a new room?"
-fit_content = true
-autowrap_mode = 0
-
-[node name="HBoxContainer" type="HBoxContainer" parent="RoomOptions/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="NewRoom" type="Button" parent="RoomOptions/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "New Room"
-
-[node name="LoadRoom" type="Button" parent="RoomOptions/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Load Room
-"
-
-[node name="LoadRoomMenu" parent="." instance=ExtResource("2_8qc63")]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
