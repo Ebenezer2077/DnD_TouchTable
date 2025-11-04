@@ -24,3 +24,5 @@ theme_override_constants/v_separation = 0
 
 [node name="LoadRoomMenu" parent="." instance=ExtResource("2_b6muj")]
 layout_mode = 1
+
+[node name="PopupMenu" type="PopupMenu" parent="."]
