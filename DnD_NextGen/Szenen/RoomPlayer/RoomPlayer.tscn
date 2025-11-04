@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://bqnymgmrhflos"]
+
+[ext_resource type="Script" uid="uid://ddjy3pka4lcdq" path="res://Szenen/RoomPlayer/RoomPlayer.cs" id="1_j7p30"]
+[ext_resource type="PackedScene" uid="uid://d2qgxf0kjblny" path="res://Szenen/LoadRoomMenu/LoadRoomMenu.tscn" id="2_b6muj"]
+
+[node name="RoomPlayer" type="Panel"]
+offset_right = 1920.0
+offset_bottom = 1080.0
+script = ExtResource("1_j7p30")
+
+[node name="Map" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GridContainer" type="GridContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0
+
+[node name="LoadRoomMenu" parent="." instance=ExtResource("2_b6muj")]
+layout_mode = 1
