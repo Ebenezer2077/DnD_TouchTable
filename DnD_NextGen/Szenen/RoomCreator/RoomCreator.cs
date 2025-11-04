@@ -26,7 +26,7 @@ public partial class RoomCreator : Panel
     private int rows = 1;
     private int buttonSize = 50;
     private bool isGridPositioned = false;
-    private string name = "";
+    private string RoomName = "";
     public override void _Ready()
     {
         loadRoomMenu = GetNode<LoadRoomMenu>("LoadRoomMenu");
@@ -35,8 +35,8 @@ public partial class RoomCreator : Panel
         SaveRoom = GetNode<Button>("MarginContainer/VBoxContainer4/SaveRoom");
         SaveRoom.Pressed += () =>
         {
-            if (name.Equals("")) textFieldPopup.Visible = true;
-            else SaveRoomFunc(name);
+            if (RoomName.Equals("")) textFieldPopup.Visible = true;
+            else SaveRoomFunc(RoomName);
         };
         Map = GetNode<TextureRect>("TextureRect");
         fileDialog = GetNode<FileDialog>("FileDialog");
@@ -58,14 +58,13 @@ public partial class RoomCreator : Panel
         GridSize.ValueChanged += (value) => AdjustGridSize((int)value);
         GridsizeLabel = GetNode<RichTextLabel>("MarginContainer/VBoxContainer3/HBoxContainer/RichTextLabel");
         GridSizeCount = GetNode<RichTextLabel>("MarginContainer/VBoxContainer3/RichTextLabel");
+        AdjustGridSize(20);
         AddRow = GetNode<Button>("MarginContainer/VBoxContainer2/AddRow");
         AddRow.Pressed += () => AdjustRows(1);
         RowCount = GetNode<RichTextLabel>("MarginContainer/VBoxContainer2/RichTextLabel");
         RemoveRow = GetNode<Button>("MarginContainer/VBoxContainer2/RemoveRow");
         RemoveRow.Pressed += () => AdjustRows(-1);
-
         gridContainer.Columns = columns;
-
         PositionGrid = GetNode<Button>("MarginContainer/VBoxContainer4/Position Grid");
         PositionGrid.Pressed += () => PositionGridFunc();
         LoadMap = GetNode<Button>("MarginContainer/VBoxContainer4/Load Map");
@@ -105,7 +104,7 @@ public partial class RoomCreator : Panel
     }
     private void SaveRoomFunc(string name)
     {
-        this.name = name;
+        this.RoomName = name;
         var path = "res://SavedRooms/" + name;
         var room = new RoomTemplate(gridContainer.GlobalPosition, new Vector2(rows, columns), buttonSize, name);
         var data = JsonSerializer.Serialize(room, new JsonSerializerOptions { IncludeFields = true });
@@ -120,6 +119,7 @@ public partial class RoomCreator : Panel
         loadRoomMenu.Visible = false;
         var roomData = LoadRoomTemplatesProvider.LoadRoom(name);
         var room = roomData.Item1;
+        RoomName = room.Name;
         InitColumns((int)room.GridSize.X);
         InitRows((int)room.GridSize.Y);
         AdjustGridSize(room.ButtonSize);
@@ -174,6 +174,7 @@ public partial class RoomCreator : Panel
     private void AdjustGridSize(int size)
     {
         buttonSize = size;
+        GridSize.Value = size;
         GridSizeCount.Text = size.ToString();
         foreach (var button in gridContainer.GetChildren())
         {
