@@ -1,0 +1,167 @@
+[gd_scene load_steps=5 format=3 uid="uid://b4x0bfwvet13b"]
+
+[ext_resource type="Script" uid="uid://c1turmvey1ld7" path="res://Szenen/RoomCreator/RoomCreator.cs" id="1_8d811"]
+[ext_resource type="PackedScene" uid="uid://i3m58w3pqsva" path="res://Szenen/GridButton/GridButton.tscn" id="3_34cxu"]
+[ext_resource type="PackedScene" uid="uid://23t188lvdiel" path="res://Szenen/TextFieldPopup/TextFieldPopup.tscn" id="3_djl0u"]
+[ext_resource type="PackedScene" uid="uid://d2qgxf0kjblny" path="res://Szenen/LoadRoomMenu/LoadRoomMenu.tscn" id="4_djl0u"]
+
+[node name="RoomCreator" type="Panel"]
+offset_right = 1920.0
+offset_bottom = 1080.0
+script = ExtResource("1_8d811")
+
+[node name="FileDialog" type="FileDialog" parent="."]
+oversampling_override = 1.0
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GridContainer" type="GridContainer" parent="."]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0
+
+[node name="GridButton2" parent="GridContainer" instance=ExtResource("3_34cxu")]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/separation = 10
+
+[node name="AddColumn" type="Button" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "Add Column"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "1"
+fit_content = true
+autowrap_mode = 0
+
+[node name="RemoveColumn" type="Button" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "Remove Column"
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer3"]
+layout_mode = 2
+
+[node name="VSlider" type="VSlider" parent="MarginContainer/VBoxContainer3/HBoxContainer"]
+custom_minimum_size = Vector2(0, 400)
+layout_mode = 2
+min_value = 10.0
+max_value = 200.0
+value = 10.0
+rounded = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer3/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+text = "Grid Size"
+fit_content = true
+autowrap_mode = 0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer3"]
+layout_mode = 2
+text = "10 Pixel"
+fit_content = true
+autowrap_mode = 0
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+
+[node name="AddRow" type="Button" parent="MarginContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+text = "Add Row"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "1"
+fit_content = true
+autowrap_mode = 0
+
+[node name="RemoveRow" type="Button" parent="MarginContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+text = "Remove Row"
+
+[node name="VBoxContainer4" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+theme_override_constants/separation = 10
+
+[node name="Position Grid" type="Button" parent="MarginContainer/VBoxContainer4"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+text = "Position Grid"
+
+[node name="Load Map" type="Button" parent="MarginContainer/VBoxContainer4"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+text = "Load Map"
+
+[node name="SaveRoom" type="Button" parent="MarginContainer/VBoxContainer4"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+text = "Save Room"
+
+[node name="LoadRoom" type="Button" parent="MarginContainer/VBoxContainer4"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+text = "Load Room
+"
+
+[node name="TextFieldPopup" parent="." instance=ExtResource("3_djl0u")]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -210.0
+offset_top = -72.0
+offset_right = 210.0
+offset_bottom = 72.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LoadRoomMenu" parent="." instance=ExtResource("4_djl0u")]
+visible = false
+layout_mode = 1

@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3 uid="uid://d2qgxf0kjblny"]
+
+[ext_resource type="Script" uid="uid://c7y8ysn0eo8ar" path="res://Szenen/LoadRoomMenu/LoadRoomMenu.cs" id="1_io3vf"]
+
+[node name="LoadRoomMenu" type="PanelContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_io3vf")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="ItemList" type="ItemList" parent="VBoxContainer"]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+auto_height = true
+
+[node name="Cancel" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+text = "Cancel"

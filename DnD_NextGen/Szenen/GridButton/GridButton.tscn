@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://i3m58w3pqsva"]
+
+[ext_resource type="Script" uid="uid://c2f6lrbnlgnyg" path="res://Szenen/GridButton/GridButton.cs" id="1_exe7k"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8odxx"]
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+
+[node name="GridButton" type="Button"]
+custom_minimum_size = Vector2(50, 50)
+theme_override_styles/normal = SubResource("StyleBoxFlat_8odxx")
+script = ExtResource("1_exe7k")
