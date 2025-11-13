@@ -105,10 +105,11 @@ public partial class RoomCreator : Panel
     private void SaveRoomFunc(string name)
     {
         this.RoomName = name;
-        var path = "res://SavedRooms/" + name;
+        var path = "user://SavedRooms/" + name;
+        var dir = DirAccess.Open("user://");
+        dir.MakeDirRecursive("SavedRooms/" + name);
         var room = new RoomTemplate(gridContainer.GlobalPosition, new Vector2(rows, columns), buttonSize, name);
         var data = JsonSerializer.Serialize(room, new JsonSerializerOptions { IncludeFields = true });
-        DirAccess.MakeDirAbsolute(path);
         Map.Texture?.GetImage()?.SavePng(path + "/map.png");
         var file = FileAccess.Open(path + "/data.json", FileAccess.ModeFlags.Write);
         file.StoreLine(data);

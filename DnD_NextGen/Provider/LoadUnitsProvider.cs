@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using Godot;
 
 public class LoadUnitsProvider//rename
@@ -8,7 +9,8 @@ public class LoadUnitsProvider//rename
     public static List<(string, ImageTexture)> LoadAllUnits()
     {
         var list = new List<(string, ImageTexture)>();
-        foreach (var room in Directory.GetDirectories("SavedUnits/"))
+        Directory.CreateDirectory("user://SavedUnits/");
+        foreach (var room in Directory.GetDirectories("user://SavedUnits/"))
         {
             var file = Directory.GetFiles(room).First(x => x.Contains(".png") || x.Contains(".jpg"));
             if (File.Exists(file))                                       //can be optimized
@@ -31,7 +33,7 @@ public class LoadUnitsProvider//rename
     
     public static void SaveUnit(string from, string name)
     {
-        var targetPath = Path.Combine("res://SavedUnits", name);
+        var targetPath = Path.Combine("user://SavedUnits", name);
         var image = new Image();
         var err = image.Load(from);
         image.SavePng(Path.Combine(targetPath, name + ".png"));
