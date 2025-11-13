@@ -6,7 +6,7 @@ public partial class MainMenu : PanelContainer
     private Button _playButton;
     private Button _managePlayers;
     private Button _createRoomButton;
-    
+
     public override void _Ready()
     {
         _playButton = GetNode<Button>("MarginContainer2/VBoxContainer/Play");
@@ -15,7 +15,13 @@ public partial class MainMenu : PanelContainer
         _managePlayers.Pressed += () => GetTree().ChangeSceneToFile("res://Szenen/PlayerManager/PlayerManager.tscn");
         _createRoomButton = GetNode<Button>("MarginContainer2/VBoxContainer/CreateNewRoom");
         _createRoomButton.Pressed += () => GetTree().ChangeSceneToFile("res://Szenen/RoomCreator/RoomCreator.tscn");
-
+        InitUserDirectory();
     }
 
+    private void InitUserDirectory()
+    {
+        var dir = DirAccess.Open("user://");
+        if(!dir.DirExists("SavedRooms"))dir.MakeDir("SavedRooms");
+        if(!dir.DirExists("SavedUnits"))dir.MakeDir("SavedUnits");
+    }
 }
