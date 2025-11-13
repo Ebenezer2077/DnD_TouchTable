@@ -28,6 +28,11 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "Play"
 
+[node name="ManagePlayers" type="Button" parent="MarginContainer2/VBoxContainer"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+text = "Manage Players"
+
 [node name="CreateNewRoom" type="Button" parent="MarginContainer2/VBoxContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2

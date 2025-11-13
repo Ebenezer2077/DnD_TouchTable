@@ -10,6 +10,7 @@ public partial class RoomPlayer : Panel
     public override void _Ready()
     {
         _popupMenu = GetNode<PopupMenu>("PopupMenu");
+        InitPopupMenu();
         _map = GetNode<TextureRect>("Map");
         _gridcontainer = GetNode<GridContainer>("GridContainer");
         _loadRoomMenu = GetNode<LoadRoomMenu>("LoadRoomMenu");
@@ -46,11 +47,21 @@ public partial class RoomPlayer : Panel
             _gridcontainer.AddChild(button);
         }
     }
-    
+
     private void OpenButtonpopup(Vector2 globalPosition, Vector2I gridPosition)
     {
         _popupMenu.Visible = true;
         _popupMenu.Position = new Vector2I((int)globalPosition.X, (int)globalPosition.Y);
+    }
+    
+    private void InitPopupMenu()
+    {
+        _popupMenu.AddItem("PlaceObject", 0);
+        _popupMenu.AddItem("PlaceItem", 1);
+        _popupMenu.IdPressed += (id) =>
+        {
+
+        };
     }
 
 }
