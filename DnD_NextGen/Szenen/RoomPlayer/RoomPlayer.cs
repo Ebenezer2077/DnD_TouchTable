@@ -7,8 +7,21 @@ public partial class RoomPlayer : Panel
     private GridContainer _gridcontainer;
     private LoadRoomMenu _loadRoomMenu;
     private PopupMenu _popupMenu;
+    private PanelContainer _loadUnit;
+    private ItemList _itemList;
+    private GridButton _activeButton;
     public override void _Ready()
     {
+        _loadUnit = GetNode<PanelContainer>("LoadUnit");
+        _itemList = GetNode<ItemList>("LoadUnit/ItemList");
+        _itemList.ItemSelected += (index) =>
+        {
+            _loadUnit.Visible = false;
+            var name = _itemList.GetItemText((int)index);
+            var texture = _itemList.GetItemIcon((int)index);
+            PlaceObject(name, texture);
+            _itemList.DeselectAll();
+        };
         _popupMenu = GetNode<PopupMenu>("PopupMenu");
         InitPopupMenu();
         _map = GetNode<TextureRect>("Map");
@@ -20,6 +33,7 @@ public partial class RoomPlayer : Panel
             LoadRoom(name);
             _loadRoomMenu.Visible = false;
         };
+        InitLoadUnit();
     }
 
     public override void _Input(InputEvent @event)
@@ -40,7 +54,11 @@ public partial class RoomPlayer : Panel
         for (var i = 0; i < columns * rows; i++)
         {
             var button = GD.Load<PackedScene>("res://Szenen/GridButton/GridButton.tscn").Instantiate<GridButton>();
-            button.onPressed += OpenButtonpopup;
+            button.onPressed += (position) =>
+            {
+                _activeButton = button;
+                OpenButtonpopup(position);
+            };
             button.CustomMinimumSize = new Vector2(buttonSize, buttonSize);
             button.Playmode = true;
             button._position = new Vector2I((int)(i % rows), (int)(i / columns));
@@ -48,7 +66,7 @@ public partial class RoomPlayer : Panel
         }
     }
 
-    private void OpenButtonpopup(Vector2 globalPosition, Vector2I gridPosition)
+    private void OpenButtonpopup(Vector2 globalPosition)
     {
         _popupMenu.Visible = true;
         _popupMenu.Position = new Vector2I((int)globalPosition.X, (int)globalPosition.Y);
@@ -60,8 +78,31 @@ public partial class RoomPlayer : Panel
         _popupMenu.AddItem("PlaceItem", 1);
         _popupMenu.IdPressed += (id) =>
         {
+            switch (id)
+            {
+                case 0:
+                    _loadUnit.Visible = true;
+                    break;
+                case 1:
+                    break;
+            }
 
         };
+    }
+
+    private void PlaceObject(string name, Texture2D texture)
+    {
+        //_activeButton.Text = name;
+        _activeButton.Icon = texture;
+    }
+
+    private void InitLoadUnit()
+    {
+        var list = LoadUnitsProvider.LoadAllUnits();
+        foreach(var unit in list)
+        {
+            _itemList.AddItem(unit.Item1, unit.Item2);
+        }
     }
 
 }
