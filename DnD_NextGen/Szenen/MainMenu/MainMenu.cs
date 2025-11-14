@@ -10,7 +10,6 @@ public partial class MainMenu : PanelContainer
     public override void _Ready()
     {
         _playButton = GetNode<Button>("MarginContainer2/VBoxContainer/Play");
-        //_playButton.Pressed += () => GetTree().ChangeSceneToFile("res://Szenen/RoomPlayer/RoomPlayer.tscn");
         _playButton.Pressed += () =>
         {
             var playrom = GD.Load<PackedScene>("res://Szenen/RoomPlayer/RoomPlayer.tscn").Instantiate<RoomPlayer>();
@@ -41,5 +40,6 @@ public partial class MainMenu : PanelContainer
     {
         _gameManager = new GameManager();
         roomPlayer.ParseGridData += _gameManager.InitCells;
+        roomPlayer.ParsePlacedObject += _gameManager.PlaceObject;
     }
 }

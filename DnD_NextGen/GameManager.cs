@@ -1,7 +1,4 @@
-using System.Numerics;
-using System.Threading;
 using Godot;
-using Godot.Collections;
 
 public partial class GameManager : Node
 {
@@ -13,7 +10,12 @@ public partial class GameManager : Node
         Cells = new Cell[dimension.X, dimension.Y];
         for (var i = 0; i < dimension.X * dimension.Y - 1; i++)
         {
-            Cells[i % dimension.X, i / dimension.X] = new Cell();
+            Cells[i % dimension.X, i / dimension.X] = new Cell { position = new Vector2I(i % dimension.X, i / dimension.X) };
         }
+    }
+
+    public void PlaceObject(string name, Vector2I position)
+    {
+        Cells[position.X, position.Y].Object = name;
     }
 }

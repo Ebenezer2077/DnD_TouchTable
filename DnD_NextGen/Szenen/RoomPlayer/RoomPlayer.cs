@@ -9,8 +9,9 @@ public partial class RoomPlayer : Panel
     private PopupMenu _popupMenu;
     private PanelContainer _loadUnit;
     private ItemList _itemList;
-    private GridButton _activeButton;
+    private (Vector2I, GridButton) _activeButton;
     public Action<Vector2I> ParseGridData;
+    public Action<string, Vector2I> ParsePlacedObject;
     public override void _Ready()
     {
         _loadUnit = GetNode<PanelContainer>("LoadUnit");
@@ -47,8 +48,8 @@ public partial class RoomPlayer : Panel
         var roomData = LoadRoomTemplatesProvider.LoadRoom(name);
         var buttonSize = roomData.Item1.ButtonSize;
         var GridPosition = roomData.Item1.GridPosition;
-        var columns = roomData.Item1.GridSize.X;
-        var rows = roomData.Item1.GridSize.Y;
+        var columns = (int)roomData.Item1.GridSize.X;
+        var rows = (int)roomData.Item1.GridSize.Y;
         ParseGridData?.Invoke(new Vector2I((int)rows, (int)columns));
         _map.Texture = roomData.Item2;
         _gridcontainer.Columns = (int)roomData.Item1.GridSize.X;
@@ -58,7 +59,8 @@ public partial class RoomPlayer : Panel
             var button = GD.Load<PackedScene>("res://Szenen/GridButton/GridButton.tscn").Instantiate<GridButton>();
             button.onPressed += (position) =>
             {
-                _activeButton = button;
+                _activeButton.Item2 = button;
+                _activeButton.Item1 = new Vector2I(i % rows, i / rows);
                 OpenButtonpopup(position);
             };
             button.CustomMinimumSize = new Vector2(buttonSize, buttonSize);
@@ -94,8 +96,9 @@ public partial class RoomPlayer : Panel
 
     private void PlaceObject(string name, Texture2D texture)
     {
-        _activeButton.TooltipText = name;
-        _activeButton.Icon = texture;
+        _activeButton.Item2.TooltipText = name;
+        _activeButton.Item2.Icon = texture;
+        ParsePlacedObject?.Invoke(name, _activeButton.Item1);
     }
 
     private void InitLoadUnit()
