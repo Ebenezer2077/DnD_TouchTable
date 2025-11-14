@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 public partial class PlayerManager : PanelContainer
 {
@@ -20,6 +21,13 @@ public partial class PlayerManager : PanelContainer
             fileDialog.Visible = true;
         };
         delete = GetNode<Button>("MarginContainer/VBoxContainer/HBoxContainer/Delete");
+        delete.Pressed += () =>
+        {
+            var index = itemList.GetSelectedItems().First();
+            var unit = itemList.GetItemText(index);
+            LoadUnitsProvider.DeleteUnit(unit);
+            itemList.RemoveItem(index);
+        };
         itemList = GetNode<ItemList>("MarginContainer/VBoxContainer/ItemList");
         textFieldPopup = GetNode<TextFieldPopup>("TextFieldPopup");
         textFieldPopup.onConfirm += (name) =>

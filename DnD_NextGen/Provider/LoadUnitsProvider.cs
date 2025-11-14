@@ -42,4 +42,15 @@ public class LoadUnitsProvider//rename
         var err = image.Load(from);
         image.SavePng(Path.Combine(targetPath, name + ".png"));
     }
+
+    public static void DeleteUnit(string name)
+    {
+        var path = Path.Combine("user://SavedUnits", name);
+        var dir = DirAccess.Open(path);
+        while (!dir.GetFiles().IsEmpty())
+        {
+            dir.Remove(Path.Combine(path, dir.GetFiles().First()));
+        }
+        dir.Remove(path);
+    }
 }
