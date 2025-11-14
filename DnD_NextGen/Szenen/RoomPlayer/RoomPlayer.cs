@@ -92,7 +92,7 @@ public partial class RoomPlayer : Panel
 
     private void PlaceObject(string name, Texture2D texture)
     {
-        //_activeButton.Text = name;
+        _activeButton.TooltipText = name;
         _activeButton.Icon = texture;
     }
 
