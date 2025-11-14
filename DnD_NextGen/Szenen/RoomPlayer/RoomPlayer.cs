@@ -10,6 +10,7 @@ public partial class RoomPlayer : Panel
     private PanelContainer _loadUnit;
     private ItemList _itemList;
     private GridButton _activeButton;
+    public Action<Vector2I> ParseGridData;
     public override void _Ready()
     {
         _loadUnit = GetNode<PanelContainer>("LoadUnit");
@@ -48,6 +49,7 @@ public partial class RoomPlayer : Panel
         var GridPosition = roomData.Item1.GridPosition;
         var columns = roomData.Item1.GridSize.X;
         var rows = roomData.Item1.GridSize.Y;
+        ParseGridData?.Invoke(new Vector2I((int)rows, (int)columns));
         _map.Texture = roomData.Item2;
         _gridcontainer.Columns = (int)roomData.Item1.GridSize.X;
         _gridcontainer.Position = GridPosition;
@@ -104,5 +106,4 @@ public partial class RoomPlayer : Panel
             _itemList.AddItem(unit.Item1, unit.Item2);
         }
     }
-
 }
