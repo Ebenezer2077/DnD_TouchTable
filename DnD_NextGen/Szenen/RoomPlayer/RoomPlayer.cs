@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using Godot;
 
 public partial class RoomPlayer : Panel
@@ -12,6 +13,7 @@ public partial class RoomPlayer : Panel
     private (Vector2I, GridButton) _activeButton;
     public Action<Vector2I> ParseGridData;
     public Action<string, Vector2I> ParsePlacedObject;
+    public Func<Vector2I, bool> IsCellFreeFunc;
     public override void _Ready()
     {
         _loadUnit = GetNode<PanelContainer>("LoadUnit");
@@ -25,7 +27,6 @@ public partial class RoomPlayer : Panel
             _itemList.DeselectAll();
         };
         _popupMenu = GetNode<PopupMenu>("PopupMenu");
-        InitPopupMenu();
         _map = GetNode<TextureRect>("Map");
         _gridcontainer = GetNode<GridContainer>("GridContainer");
         _loadRoomMenu = GetNode<LoadRoomMenu>("LoadRoomMenu");
@@ -36,6 +37,7 @@ public partial class RoomPlayer : Panel
             _loadRoomMenu.Visible = false;
         };
         InitLoadUnit();
+        InitPopupMenuHandlíng();
     }
 
     public override void _Input(InputEvent @event)
@@ -50,7 +52,7 @@ public partial class RoomPlayer : Panel
         var GridPosition = roomData.Item1.GridPosition;
         var columns = (int)roomData.Item1.GridSize.X;
         var rows = (int)roomData.Item1.GridSize.Y;
-        ParseGridData?.Invoke(new Vector2I((int)rows, (int)columns));
+        ParseGridData?.Invoke(new Vector2I(rows, columns));
         _map.Texture = roomData.Item2;
         _gridcontainer.Columns = (int)roomData.Item1.GridSize.X;
         _gridcontainer.Position = GridPosition;
@@ -60,26 +62,34 @@ public partial class RoomPlayer : Panel
             button.onPressed += (position) =>
             {
                 _activeButton.Item2 = button;
-                _activeButton.Item1 = new Vector2I(i % rows, i / rows);
-                OpenButtonpopup(position);
+                _activeButton.Item1 = new Vector2I(button._position.X, button._position.Y);
+                var isCellFree = (bool)IsCellFreeFunc?.Invoke(button._position);
+                OpenButtonpopup(position, isCellFree);
             };
             button.CustomMinimumSize = new Vector2(buttonSize, buttonSize);
             button.Playmode = true;
-            button._position = new Vector2I((int)(i % rows), (int)(i / columns));
+            button._position = new Vector2I(i % rows, i / rows);
             _gridcontainer.AddChild(button);
         }
     }
 
-    private void OpenButtonpopup(Vector2 globalPosition)
+    private void OpenButtonpopup(Vector2 globalPosition, bool isCellFree)
     {
+        InitPopupMenu(isCellFree);
         _popupMenu.Visible = true;
         _popupMenu.Position = new Vector2I((int)globalPosition.X, (int)globalPosition.Y);
     }
     
-    private void InitPopupMenu()
+    private void InitPopupMenu(bool isCellFree)
     {
-        _popupMenu.AddItem("PlaceObject", 0);
-        _popupMenu.AddItem("PlaceItem", 1);
+        _popupMenu.Clear();
+        if(isCellFree) _popupMenu.AddItem("PlaceObject", 0);
+        else _popupMenu.AddItem("MoveObject", 1);
+        _popupMenu.AddItem("PlaceItem", 2);
+    }
+
+    private void InitPopupMenuHandlíng()
+    {
         _popupMenu.IdPressed += (id) =>
         {
             switch (id)

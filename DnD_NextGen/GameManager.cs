@@ -18,4 +18,16 @@ public partial class GameManager : Node
     {
         Cells[position.X, position.Y].Object = name;
     }
+    public bool IsCellFree(Vector2I position)
+    {
+        return Cells[position.X, position.Y].Object == null;
+    }
+
+    public void MoveObject(Vector2I position)
+    {
+        if(Cells[position.X, position.Y].Object == "")
+        {
+            
+        }
+    }
 }

@@ -41,5 +41,6 @@ public partial class MainMenu : PanelContainer
         _gameManager = new GameManager();
         roomPlayer.ParseGridData += _gameManager.InitCells;
         roomPlayer.ParsePlacedObject += _gameManager.PlaceObject;
+        roomPlayer.IsCellFreeFunc += _gameManager.IsCellFree;
     }
 }
