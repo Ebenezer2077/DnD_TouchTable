@@ -100,8 +100,11 @@ public partial class RoomPlayer : Panel
     {
         _popupMenu.Clear();
         if(isCellFree) _popupMenu.AddItem("PlaceObject", 0);
-        else _popupMenu.AddItem("MoveObject", 1);
-        _popupMenu.AddItem("PlaceItem", 2);
+        else
+        {
+            _popupMenu.AddItem("MoveObject", 1);
+            _popupMenu.AddItem("DeleteObject", 2);
+        }
     }
 
     private void InitPopupMenuHandlíng()
