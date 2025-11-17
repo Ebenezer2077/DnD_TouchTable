@@ -8,10 +8,10 @@ public class LoadRoomTemplatesProvider
     public static List<(string, ImageTexture)> LoadAllRoomPreview()
     {
         var list = new List<(string, ImageTexture)>();
-        foreach (var room in Directory.GetDirectories("SavedRooms/"))
+        foreach (var room in DirAccess.GetDirectoriesAt("user://SavedRooms/"))
         {
-            var path = Path.Combine(room, "map.png");
-            if(File.Exists(path))                                       //can be optimized
+            var path = "user://SavedRooms/" + Path.Combine(room, "map.png");
+            if(Godot.FileAccess.FileExists(path))                                       //can be optimized
             {
                 var image = new Image();
                 var err = image.Load(path);
@@ -27,13 +27,13 @@ public class LoadRoomTemplatesProvider
         return list;
     }
     
-    public static (RoomTemplate, ImageTexture) LoadRoom(string roomName)
+    public static (RoomTemplate, ImageTexture) LoadRoom(string roomName)//only name not full directory
     {
-        var file = Godot.FileAccess.Open(Path.Combine(roomName, "data.json"), Godot.FileAccess.ModeFlags.Read);
+        var file = Godot.FileAccess.Open("user://SavedRooms/" + Path.Combine(roomName, "data.json"), Godot.FileAccess.ModeFlags.Read);
         var data = file.GetAsText();
         file.Close();
-        var path = Path.Combine(roomName, "map.png");
-        if(File.Exists(path))
+        var path = "user://SavedRooms/" + Path.Combine(roomName, "map.png");
+        if(Godot.FileAccess.FileExists(path))
         {
             var image = new Image();
             var err = image.Load(path);
