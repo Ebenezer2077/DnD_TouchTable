@@ -12,7 +12,7 @@ public partial class RoomPlayer : Panel
     private TextFieldPopup _textFieldPopup;
     private PanelContainer _loadUnit;
     private ItemList _itemList;
-    private (Vector2I, GridButton) _activeButton;
+    private GridButton _activeButton;
     public Action<Vector2I> DeleteObjectAction;
     public Action<Vector2I> ParseGridData;
     public Action<string, Vector2I> ParsePlacedObject;
@@ -32,8 +32,8 @@ public partial class RoomPlayer : Panel
             _textFieldPopup.SetText(name);
             _textFieldPopup.onConfirm += (name) =>
             {
-                PlaceObject(_activeButton.Item2, name, texture);
-                ParsePlacedObject?.Invoke(name, _activeButton.Item1);
+                PlaceObject(_activeButton, name, texture);
+                ParsePlacedObject?.Invoke(name, _activeButton._position);
                 _itemList.DeselectAll();
             };
         };
@@ -72,11 +72,11 @@ public partial class RoomPlayer : Panel
             var button = GD.Load<PackedScene>("res://Szenen/GridButton/GridButton.tscn").Instantiate<GridButton>();
             button.onPressed += (position) =>
             {
-                _activeButton.Item2 = button;
-                _activeButton.Item1 = new Vector2I(button._position.X, button._position.Y);
+                _activeButton = button;
+                _activeButton._position = new Vector2I(button._position.X, button._position.Y);
                 if (_isMovingActionActive)
                 {
-                    MoveObject?.Invoke(_activeButton.Item2._position);
+                    MoveObject?.Invoke(_activeButton._position);
                     _isMovingActionActive = !_isMovingActionActive;
                     return;
                 }
@@ -118,12 +118,12 @@ public partial class RoomPlayer : Panel
                     _loadUnit.Visible = true;
                     break;
                 case 1:
-                    MoveObject?.Invoke(_activeButton.Item2._position);
+                    MoveObject?.Invoke(_activeButton._position);
                     _isMovingActionActive = !_isMovingActionActive;
                     break;
                 case 2:
-                    DeleteObject(_activeButton.Item2);
-                    DeleteObjectAction?.Invoke(_activeButton.Item1);
+                    DeleteObject(_activeButton);
+                    DeleteObjectAction?.Invoke(_activeButton._position);
                     break;
             }
 
