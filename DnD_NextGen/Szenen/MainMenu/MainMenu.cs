@@ -42,5 +42,7 @@ public partial class MainMenu : PanelContainer
         roomPlayer.ParseGridData += _gameManager.InitCells;
         roomPlayer.ParsePlacedObject += _gameManager.PlaceObject;
         roomPlayer.IsCellFreeFunc += _gameManager.IsCellFree;
+        roomPlayer.MoveObject += _gameManager.MoveObject;
+        _gameManager.SwapObjectsAction += roomPlayer.SwapObjects;
     }
 }

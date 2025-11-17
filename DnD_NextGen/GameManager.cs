@@ -1,9 +1,12 @@
+using System;
 using Godot;
 
 public partial class GameManager : Node
 {
     public SceneTree tree;
     private Cell[,] Cells;
+    private Vector2I? grabbedFrom;
+    public Action<Vector2I, Vector2I> SwapObjectsAction;
 
     public void InitCells(Vector2I dimension)
     {
@@ -25,9 +28,21 @@ public partial class GameManager : Node
 
     public void MoveObject(Vector2I position)
     {
-        if(Cells[position.X, position.Y].Object == "")
+        if(grabbedFrom == null)
         {
-            
+            grabbedFrom = position;
+        } else
+        {
+            SwapObjects(position, grabbedFrom.Value);
+            grabbedFrom = null;
         }
+    }
+
+    private void SwapObjects(Vector2I from, Vector2I to)
+    {
+        var holder = Cells[to.X, to.Y].Object;
+        Cells[to.X, to.Y].Object = Cells[from.X, from.Y].Object;
+        Cells[from.X, from.Y].Object = holder;
+        SwapObjectsAction?.Invoke(from, to);
     }
 }

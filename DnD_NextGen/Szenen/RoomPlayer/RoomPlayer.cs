@@ -1,9 +1,12 @@
 using System;
+using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Godot;
 
 public partial class RoomPlayer : Panel
 {
+    private bool _isMovingActionActive = false;
     private TextureRect _map;
     private GridContainer _gridcontainer;
     private LoadRoomMenu _loadRoomMenu;
@@ -13,6 +16,7 @@ public partial class RoomPlayer : Panel
     private (Vector2I, GridButton) _activeButton;
     public Action<Vector2I> ParseGridData;
     public Action<string, Vector2I> ParsePlacedObject;
+    public Action<Vector2I> MoveObject;
     public Func<Vector2I, bool> IsCellFreeFunc;
     public override void _Ready()
     {
@@ -24,6 +28,7 @@ public partial class RoomPlayer : Panel
             var name = _itemList.GetItemText((int)index);
             var texture = _itemList.GetItemIcon((int)index);
             PlaceObject(name, texture);
+            ParsePlacedObject?.Invoke(name, _activeButton.Item1);
             _itemList.DeselectAll();
         };
         _popupMenu = GetNode<PopupMenu>("PopupMenu");
@@ -63,6 +68,12 @@ public partial class RoomPlayer : Panel
             {
                 _activeButton.Item2 = button;
                 _activeButton.Item1 = new Vector2I(button._position.X, button._position.Y);
+                if (_isMovingActionActive)
+                {
+                    MoveObject?.Invoke(_activeButton.Item2._position);
+                    _isMovingActionActive = !_isMovingActionActive;
+                    return;
+                }
                 var isCellFree = (bool)IsCellFreeFunc?.Invoke(button._position);
                 OpenButtonpopup(position, isCellFree);
             };
@@ -98,17 +109,33 @@ public partial class RoomPlayer : Panel
                     _loadUnit.Visible = true;
                     break;
                 case 1:
+                    MoveObject?.Invoke(_activeButton.Item2._position);
+                    _isMovingActionActive = !_isMovingActionActive;
+                    break;
+                case 2:
                     break;
             }
 
         };
     }
 
+    public void SwapObjects(Vector2I from, Vector2I to)
+    {
+        var fromButton = _gridcontainer.GetChildren().OfType<GridButton>().Where<GridButton>(x => x._position.X == from.X && x._position.Y == from.Y).First();
+        var toButton = _gridcontainer.GetChildren().OfType<GridButton>().Where<GridButton>(x => x._position.X == to.X && x._position.Y == to.Y).First();
+
+        var textureHolder = fromButton.Icon;
+        fromButton.Icon = toButton.Icon;
+        toButton.Icon = textureHolder;
+        var nameHolder = fromButton.TooltipText;
+        fromButton.TooltipText = toButton.TooltipText;
+        toButton.TooltipText = nameHolder;
+    }
+
     private void PlaceObject(string name, Texture2D texture)
     {
         _activeButton.Item2.TooltipText = name;
         _activeButton.Item2.Icon = texture;
-        ParsePlacedObject?.Invoke(name, _activeButton.Item1);
     }
 
     private void InitLoadUnit()
