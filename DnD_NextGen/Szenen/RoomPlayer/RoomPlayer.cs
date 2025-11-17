@@ -27,7 +27,7 @@ public partial class RoomPlayer : Panel
             _loadUnit.Visible = false;
             var name = _itemList.GetItemText((int)index);
             var texture = _itemList.GetItemIcon((int)index);
-            PlaceObject(name, texture);
+            PlaceObject(_activeButton.Item2, name, texture);
             ParsePlacedObject?.Invoke(name, _activeButton.Item1);
             _itemList.DeselectAll();
         };
@@ -121,21 +121,18 @@ public partial class RoomPlayer : Panel
 
     public void SwapObjects(Vector2I from, Vector2I to)
     {
-        var fromButton = _gridcontainer.GetChildren().OfType<GridButton>().Where<GridButton>(x => x._position.X == from.X && x._position.Y == from.Y).First();
-        var toButton = _gridcontainer.GetChildren().OfType<GridButton>().Where<GridButton>(x => x._position.X == to.X && x._position.Y == to.Y).First();
+        var fromButton = _gridcontainer.GetChildren().OfType<GridButton>().Where(x => x._position.X == from.X && x._position.Y == from.Y).First();
+        var toButton = _gridcontainer.GetChildren().OfType<GridButton>().Where(x => x._position.X == to.X && x._position.Y == to.Y).First();
 
-        var textureHolder = fromButton.Icon;
-        fromButton.Icon = toButton.Icon;
-        toButton.Icon = textureHolder;
-        var nameHolder = fromButton.TooltipText;
-        fromButton.TooltipText = toButton.TooltipText;
-        toButton.TooltipText = nameHolder;
+        var holder = (name: fromButton.TooltipText, texture: fromButton.Icon);
+        PlaceObject(fromButton, toButton.TooltipText, toButton.Icon);
+        PlaceObject(toButton, holder.name, holder.texture);
     }
 
-    private void PlaceObject(string name, Texture2D texture)
+    private void PlaceObject(GridButton targetbutton, string name, Texture2D texture)
     {
-        _activeButton.Item2.TooltipText = name;
-        _activeButton.Item2.Icon = texture;
+        targetbutton.TooltipText = name;
+        targetbutton.Icon = texture;
     }
 
     private void InitLoadUnit()

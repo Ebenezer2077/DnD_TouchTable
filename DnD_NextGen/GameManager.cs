@@ -41,8 +41,8 @@ public partial class GameManager : Node
     private void SwapObjects(Vector2I from, Vector2I to)
     {
         var holder = Cells[to.X, to.Y].Object;
-        Cells[to.X, to.Y].Object = Cells[from.X, from.Y].Object;
-        Cells[from.X, from.Y].Object = holder;
+        PlaceObject(Cells[from.X, from.Y].Object, to);
+        PlaceObject(holder, from);
         SwapObjectsAction?.Invoke(from, to);
     }
 }
