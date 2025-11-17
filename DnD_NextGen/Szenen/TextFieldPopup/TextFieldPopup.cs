@@ -21,4 +21,8 @@ public partial class TextFieldPopup : PanelContainer
         lineEdit = GetNode<LineEdit>("MarginContainer/VBoxContainer/LineEdit");
     }
 
+    public void SetText(string text)
+    {
+        lineEdit.Text = text;
+    }
 }

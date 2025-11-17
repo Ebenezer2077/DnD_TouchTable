@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://bqnymgmrhflos"]
+[gd_scene load_steps=4 format=3 uid="uid://bqnymgmrhflos"]
 
 [ext_resource type="Script" uid="uid://ddjy3pka4lcdq" path="res://Szenen/RoomPlayer/RoomPlayer.cs" id="1_j7p30"]
 [ext_resource type="PackedScene" uid="uid://d2qgxf0kjblny" path="res://Szenen/LoadRoomMenu/LoadRoomMenu.tscn" id="2_b6muj"]
+[ext_resource type="PackedScene" uid="uid://23t188lvdiel" path="res://Szenen/TextFieldPopup/TextFieldPopup.tscn" id="3_mmjlj"]
 
 [node name="RoomPlayer" type="Panel"]
 offset_right = 1920.0
@@ -48,3 +49,18 @@ grow_vertical = 2
 clip_contents = false
 custom_minimum_size = Vector2(0, 600)
 layout_mode = 2
+
+[node name="TextFieldPopup" parent="." instance=ExtResource("3_mmjlj")]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -210.0
+offset_top = -72.0
+offset_right = 210.0
+offset_bottom = 72.0
+grow_horizontal = 2
+grow_vertical = 2

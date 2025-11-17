@@ -1,7 +1,5 @@
 using System;
 using System.Linq;
-using System.Reflection;
-using System.Threading;
 using Godot;
 
 public partial class RoomPlayer : Panel
@@ -11,6 +9,7 @@ public partial class RoomPlayer : Panel
     private GridContainer _gridcontainer;
     private LoadRoomMenu _loadRoomMenu;
     private PopupMenu _popupMenu;
+    private TextFieldPopup _textFieldPopup;
     private PanelContainer _loadUnit;
     private ItemList _itemList;
     private (Vector2I, GridButton) _activeButton;
@@ -20,6 +19,7 @@ public partial class RoomPlayer : Panel
     public Func<Vector2I, bool> IsCellFreeFunc;
     public override void _Ready()
     {
+        _textFieldPopup = GetNode<TextFieldPopup>("TextFieldPopup");
         _loadUnit = GetNode<PanelContainer>("LoadUnit");
         _itemList = GetNode<ItemList>("LoadUnit/ItemList");
         _itemList.ItemSelected += (index) =>
@@ -27,9 +27,14 @@ public partial class RoomPlayer : Panel
             _loadUnit.Visible = false;
             var name = _itemList.GetItemText((int)index);
             var texture = _itemList.GetItemIcon((int)index);
-            PlaceObject(_activeButton.Item2, name, texture);
-            ParsePlacedObject?.Invoke(name, _activeButton.Item1);
-            _itemList.DeselectAll();
+            _textFieldPopup.Visible = true;
+            _textFieldPopup.SetText(name);
+            _textFieldPopup.onConfirm += (name) =>
+            {
+                PlaceObject(_activeButton.Item2, name, texture);
+                ParsePlacedObject?.Invoke(name, _activeButton.Item1);
+                _itemList.DeselectAll();
+            };
         };
         _popupMenu = GetNode<PopupMenu>("PopupMenu");
         _map = GetNode<TextureRect>("Map");
