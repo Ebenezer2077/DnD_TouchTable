@@ -43,6 +43,7 @@ public partial class MainMenu : PanelContainer
         roomPlayer.ParsePlacedObject += _gameManager.PlaceObject;
         roomPlayer.IsCellFreeFunc += _gameManager.IsCellFree;
         roomPlayer.MoveObject += _gameManager.MoveObject;
+        roomPlayer.DeleteObjectAction += _gameManager.DeleteObject;
         _gameManager.SwapObjectsAction += roomPlayer.SwapObjects;
     }
 }

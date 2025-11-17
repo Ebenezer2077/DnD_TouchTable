@@ -45,4 +45,9 @@ public partial class GameManager : Node
         PlaceObject(holder, from);
         SwapObjectsAction?.Invoke(from, to);
     }
+
+    public void DeleteObject(Vector2I position)
+    {
+        PlaceObject(null, position);
+    }
 }

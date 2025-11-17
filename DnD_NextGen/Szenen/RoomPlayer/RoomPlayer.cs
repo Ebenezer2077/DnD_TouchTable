@@ -13,6 +13,7 @@ public partial class RoomPlayer : Panel
     private PanelContainer _loadUnit;
     private ItemList _itemList;
     private (Vector2I, GridButton) _activeButton;
+    public Action<Vector2I> DeleteObjectAction;
     public Action<Vector2I> ParseGridData;
     public Action<string, Vector2I> ParsePlacedObject;
     public Action<Vector2I> MoveObject;
@@ -121,6 +122,8 @@ public partial class RoomPlayer : Panel
                     _isMovingActionActive = !_isMovingActionActive;
                     break;
                 case 2:
+                    DeleteObject(_activeButton.Item2);
+                    DeleteObjectAction?.Invoke(_activeButton.Item1);
                     break;
             }
 
@@ -141,6 +144,12 @@ public partial class RoomPlayer : Panel
     {
         targetbutton.TooltipText = name;
         targetbutton.Icon = texture;
+    }
+
+    private void DeleteObject(GridButton targetButton)
+    {
+        targetButton.TooltipText = null;
+        targetButton.Icon = null;
     }
 
     private void InitLoadUnit()
