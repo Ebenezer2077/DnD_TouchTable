@@ -18,10 +18,6 @@ public partial class MainMenu : PanelContainer
             GetTree().CurrentScene.QueueFree();
             GetTree().CurrentScene = playrom;
         };
-        
-        
-
-
         _managePlayers = GetNode<Button>("MarginContainer2/VBoxContainer/ManagePlayers");
         _managePlayers.Pressed += () => GetTree().ChangeSceneToFile("res://Szenen/PlayerManager/PlayerManager.tscn");
         _createRoomButton = GetNode<Button>("MarginContainer2/VBoxContainer/CreateNewRoom");
@@ -39,11 +35,6 @@ public partial class MainMenu : PanelContainer
     private void InitGameManager(RoomPlayer roomPlayer)
     {
         _gameManager = new GameManager();
-        roomPlayer.ParseGridData += _gameManager.InitCells;
-        roomPlayer.ParsePlacedObject += _gameManager.PlaceObject;
-        roomPlayer.IsCellFreeFunc += _gameManager.IsCellFree;
-        roomPlayer.MoveObject += _gameManager.MoveObject;
-        roomPlayer.DeleteObjectAction += _gameManager.DeleteObject;
-        _gameManager.SwapObjectsAction += roomPlayer.SwapObjects;
+        PlayerManagerConnector.Connect(roomPlayer, _gameManager);
     }
 }
