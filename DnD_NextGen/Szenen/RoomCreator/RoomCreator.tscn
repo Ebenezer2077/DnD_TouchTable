@@ -147,6 +147,12 @@ layout_mode = 2
 text = "Load Room
 "
 
+[node name="Confirm" type="Button" parent="MarginContainer/VBoxContainer4"]
+visible = false
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+text = "Confirm"
+
 [node name="TextFieldPopup" parent="." instance=ExtResource("3_djl0u")]
 visible = false
 layout_mode = 1

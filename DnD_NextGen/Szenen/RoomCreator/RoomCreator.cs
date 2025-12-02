@@ -1,4 +1,6 @@
 using Godot;
+using System;
+using System.Collections.Generic;
 using System.Text.Json;
 
 public partial class RoomCreator : Panel
@@ -20,13 +22,20 @@ public partial class RoomCreator : Panel
     private Button PositionGrid;
     private Button LoadMap;
     private Button LoadRoom;
+    private Button ConfirmPlace;
     private TextureRect Map;
 
     private int columns = 1;
     private int rows = 1;
     private int buttonSize = 50;
     private bool isGridPositioned = false;
+    private bool StickGridToCursor = true;
     private string RoomName = "";
+    private int StartingDistance = -1;
+    private int StartingSize;
+    private Vector2I StretchPositionOne;
+    private Vector2I StretchPositionTwo;
+    private Dictionary<int, Vector2I> Fingers = new Dictionary<int, Vector2I>();
     public override void _Ready()
     {
         loadRoomMenu = GetNode<LoadRoomMenu>("LoadRoomMenu");
@@ -79,21 +88,57 @@ public partial class RoomCreator : Panel
         };
 
         textFieldPopup.onConfirm += SaveRoomFunc;
+        ConfirmPlace = GetNode<Button>("MarginContainer/VBoxContainer4/Confirm");
+        ConfirmPlace.Pressed += PositionGridFunc;
     }
     public override void _Input(InputEvent @event)
     {
+        if(@event is InputEventScreenTouch touch && isGridPositioned) {
+            if(touch.IsPressed())
+            {
+                Fingers[touch.Index] = (Vector2I)touch.Position;
+                if(touch.Index == 1)
+                {
+                    StartingDistance = (int)Fingers[0].DistanceTo(Fingers[1]);
+                    StartingSize = buttonSize;
+                }
+            }
+            if(touch.IsReleased())
+            {
+                Fingers.Remove(touch.Index);
+            }
+        }
+        
         if (@event.IsActionPressed("Back"))
         {
             GetTree().ChangeSceneToFile("res://Szenen/MainMenu/MainMenu.tscn");
         }
         if (isGridPositioned && @event is InputEventMouseButton inputEventMouseButton && inputEventMouseButton.IsPressed())
         {
-            PositionGridFunc();
+            StickGridToCursor = false;
+        }
+        if(@event is InputEventScreenDrag drag && isGridPositioned)
+        {
+            if(drag.Index == 0)
+            {
+                StretchPositionOne = new ((int)drag.Position.X, (int)drag.Position.Y);
+                AdjustGridPosition(StretchPositionOne);
+            }
+            if(drag.Index == 1)
+            {
+                StretchPositionTwo = new ((int)drag.Position.X, (int)drag.Position.Y);
+            }
+            if(Fingers.ContainsKey(1) && Fingers.ContainsKey(0))
+            {
+                var newGridSize = StartingSize*(StretchPositionOne.DistanceTo(StretchPositionTwo) / StartingDistance);
+                if(newGridSize == 0) newGridSize = 1;
+                AdjustGridSize((int)newGridSize);
+            }
         }
     }
     public override void _Process(double delta)
     {
-        if (isGridPositioned)
+        if (isGridPositioned && StickGridToCursor)
         {
             AdjustGridPosition(GetViewport().GetMousePosition());
         }
@@ -131,6 +176,7 @@ public partial class RoomCreator : Panel
     private void PositionGridFunc()
     {
         isGridPositioned = !isGridPositioned;
+        StickGridToCursor = true;
         ToggleControlls(!isGridPositioned);
     }
 
@@ -146,6 +192,7 @@ public partial class RoomCreator : Panel
         RowCount.Visible = enable;
         RemoveRow.Visible = enable;
         PositionGrid.Visible = enable;
+        ConfirmPlace.Visible = !enable;
     }
     private void InitRows(int amount)
     {
