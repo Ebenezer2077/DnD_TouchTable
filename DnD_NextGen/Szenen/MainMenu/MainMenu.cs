@@ -13,7 +13,7 @@ public partial class MainMenu : PanelContainer
         _playButton.Pressed += () =>
         {
             var playrom = GD.Load<PackedScene>("res://Szenen/RoomPlayer/RoomPlayer.tscn").Instantiate<RoomPlayer>();
-            InitGameManager(playrom);
+            InitPlayGameManager(playrom);
             GetTree().Root.AddChild(playrom);
             GetTree().CurrentScene.QueueFree();
             GetTree().CurrentScene = playrom;
@@ -21,7 +21,13 @@ public partial class MainMenu : PanelContainer
         _managePlayers = GetNode<Button>("MarginContainer2/VBoxContainer/ManagePlayers");
         _managePlayers.Pressed += () => GetTree().ChangeSceneToFile("res://Szenen/PlayerManager/PlayerManager.tscn");
         _createRoomButton = GetNode<Button>("MarginContainer2/VBoxContainer/CreateNewRoom");
-        _createRoomButton.Pressed += () => GetTree().ChangeSceneToFile("res://Szenen/RoomCreator/RoomCreator.tscn");
+        _createRoomButton.Pressed += () => {
+            var createRoom = GD.Load<PackedScene>("res://Szenen/RoomCreator/RoomCreator.tscn").Instantiate<RoomCreator>();
+            InitCreateGameManager(createRoom);
+            GetTree().Root.AddChild(createRoom);
+            GetTree().CurrentScene.QueueFree();
+            GetTree().CurrentScene = createRoom;
+        };
         InitUserDirectory();
     }
 
@@ -32,9 +38,15 @@ public partial class MainMenu : PanelContainer
         if(!dir.DirExists("SavedUnits"))dir.MakeDir("SavedUnits");
     }
 
-    private void InitGameManager(RoomPlayer roomPlayer)
+    private void InitPlayGameManager(RoomPlayer roomPlayer)
     {
         _gameManager = new GameManager();
-        PlayerManagerConnector.Connect(roomPlayer, _gameManager);
+        PlayerManagerConnector.ConnectPlayRoom(roomPlayer, _gameManager);
+    }
+
+    private void InitCreateGameManager(RoomCreator roomCreator)
+    {
+        _gameManager = new GameManager();
+        PlayerManagerConnector.ConnectCreateRoom(roomCreator, _gameManager);
     }
 }

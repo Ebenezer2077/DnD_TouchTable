@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using System.Collections.Generic;
 using System.Text.Json;
 
@@ -8,6 +9,7 @@ public partial class RoomCreator : Panel
     private FileDialog fileDialog;
     private LoadRoomMenu loadRoomMenu;
     private TextFieldPopup textFieldPopup;
+    private TextFieldPopup LoadUnitTextfieldPopup;
     private GridContainer gridContainer;
     private Button AddColumn;
     private RichTextLabel ColumnCount;
@@ -23,6 +25,10 @@ public partial class RoomCreator : Panel
     private Button LoadRoom;
     private Button ConfirmPlace;
     private TextureRect Map;
+    private PanelContainer _loadUnit;
+    private ItemList _itemList;
+
+    private GridButton activeButton;
 
     private int columns = 1;
     private int rows = 1;
@@ -35,8 +41,28 @@ public partial class RoomCreator : Panel
     private Vector2I StretchPositionOne;
     private Vector2I StretchPositionTwo;
     private Dictionary<int, Vector2I> Fingers = new Dictionary<int, Vector2I>();
+    public Func<Vector2I, bool> IsCellFreeFunc;
+    public Action<Vector2I> DeleteObjectAction;
+    public Action<string, Vector2I> ParsePlacedObject;
+    public Action<Vector2I> ParseGridData;
     public override void _Ready()
     {
+        _loadUnit = GetNode<PanelContainer>("LoadUnit");
+        _itemList = GetNode<ItemList>("LoadUnit/ItemList");
+        _itemList.ItemSelected += (index) =>
+        {
+            _loadUnit.Visible = false;
+            var name = _itemList.GetItemText((int)index);
+            var texture = _itemList.GetItemIcon((int)index);
+            LoadUnitTextfieldPopup.Visible = true;
+            LoadUnitTextfieldPopup.SetText(name);
+            LoadUnitTextfieldPopup.onConfirm += (name) =>
+            {
+                ChangeUnitHelper.PlaceObject(activeButton, name, texture);
+                ParsePlacedObject?.Invoke(name, activeButton._position);
+                _itemList.DeselectAll();
+            };
+        };
         loadRoomMenu = GetNode<LoadRoomMenu>("LoadRoomMenu");
         loadRoomMenu.LoadRoom += LoadRoomFunc;
         textFieldPopup = GetNode<TextFieldPopup>("TextFieldPopup");
@@ -88,6 +114,7 @@ public partial class RoomCreator : Panel
         textFieldPopup.onConfirm += SaveRoomFunc;
         ConfirmPlace = GetNode<Button>("MarginContainer/VBoxContainer4/Confirm");
         ConfirmPlace.Pressed += PositionGridFunc;
+        InitLoadUnit();
     }
     public override void _Input(InputEvent @event)
     {
@@ -227,15 +254,41 @@ public partial class RoomCreator : Panel
 
     private void RefreshContainer()
     {
+        ParseGridData?.Invoke(new Vector2I(rows, columns));
         foreach (var button in gridContainer.GetChildren())
         {
+            DeleteObjectAction?.Invoke(((GridButton)button)._position);
             gridContainer.RemoveChild(button);
         }
         for (int i = 0; i < rows * columns; i++)
         {
             var button = GD.Load<PackedScene>("res://Szenen/GridButton/GridButton.tscn").Instantiate<GridButton>();
+            //try new feature
+            button.Playmode = false;
+            button._loadUnit = _loadUnit;
+            button.DeleteObjectAction += (GridButton gbutton) =>
+            {
+                ChangeUnitHelper.DeleteObject(gbutton);
+                DeleteObjectAction?.Invoke(gbutton._position);
+            };
+            button.onPressed += (position) =>
+            {
+                activeButton = button;
+                var isCellFree = (bool)IsCellFreeFunc?.Invoke(button._position);
+                if(isCellFree) button.OpenButtonpopup(position, isCellFree);
+            };
+            button._position = new Vector2I(i % rows, i / rows);
+            //end try
             button.CustomMinimumSize = new Vector2(buttonSize, buttonSize);
             gridContainer.AddChild(button);
+        }
+    }
+    private void InitLoadUnit()
+    {
+        var list = LoadUnitsProvider.LoadAllUnits();
+        foreach(var unit in list)
+        {
+            _itemList.AddItem(unit.Item1, unit.Item2);
         }
     }
 }
