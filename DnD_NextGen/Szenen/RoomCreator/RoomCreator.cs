@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 
 public partial class RoomCreator : Panel
@@ -49,6 +50,7 @@ public partial class RoomCreator : Panel
     {
         _loadUnit = GetNode<PanelContainer>("LoadUnit");
         _itemList = GetNode<ItemList>("LoadUnit/ItemList");
+        LoadUnitTextfieldPopup = GetNode<TextFieldPopup>("LoadUnitTextfieldPopup");
         _itemList.ItemSelected += (index) =>
         {
             _loadUnit.Visible = false;
@@ -200,6 +202,15 @@ public partial class RoomCreator : Panel
         isGridPositioned = !isGridPositioned;
         StickGridToCursor = true;
         ToggleControlls(!isGridPositioned);
+        ToggleGridButtonInput(isGridPositioned);
+    }
+
+    private void ToggleGridButtonInput(bool enable)
+    {
+        foreach(var button in gridContainer.GetChildren())
+        {
+            ((GridButton)button).MouseFilter = enable ? MouseFilterEnum.Ignore : MouseFilterEnum.Pass;
+        }
     }
 
     private void ToggleControlls(bool enable)
@@ -257,7 +268,6 @@ public partial class RoomCreator : Panel
         ParseGridData?.Invoke(new Vector2I(rows, columns));
         foreach (var button in gridContainer.GetChildren())
         {
-            DeleteObjectAction?.Invoke(((GridButton)button)._position);
             gridContainer.RemoveChild(button);
         }
         for (int i = 0; i < rows * columns; i++)
@@ -275,7 +285,7 @@ public partial class RoomCreator : Panel
             {
                 activeButton = button;
                 var isCellFree = (bool)IsCellFreeFunc?.Invoke(button._position);
-                if(isCellFree) button.OpenButtonpopup(position, isCellFree);
+                button.OpenButtonpopup(position, isCellFree);
             };
             button._position = new Vector2I(i % rows, i / rows);
             //end try

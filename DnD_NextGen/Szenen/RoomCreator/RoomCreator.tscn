@@ -44,6 +44,7 @@ theme_override_constants/margin_bottom = 20
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
+mouse_filter = 2
 theme_override_constants/separation = 10
 
 [node name="AddColumn" type="Button" parent="MarginContainer/VBoxContainer"]
@@ -71,9 +72,11 @@ text = "Remove Column"
 [node name="VBoxContainer3" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 4
+mouse_filter = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer3"]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="VSlider" type="VSlider" parent="MarginContainer/VBoxContainer3/HBoxContainer"]
 custom_minimum_size = Vector2(0, 400)
@@ -100,6 +103,7 @@ autowrap_mode = 0
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
+mouse_filter = 2
 
 [node name="AddRow" type="Button" parent="MarginContainer/VBoxContainer2"]
 custom_minimum_size = Vector2(150, 50)
@@ -123,6 +127,7 @@ text = "Remove Row"
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
+mouse_filter = 2
 theme_override_constants/separation = 10
 
 [node name="Position Grid" type="Button" parent="MarginContainer/VBoxContainer4"]
