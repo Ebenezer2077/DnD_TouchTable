@@ -195,17 +195,17 @@ public partial class RoomCreator : Panel
         AdjustGridSize(room.ButtonSize);
         AdjustGridPosition(room.GridPosition);
         Map.Texture = roomData.Item2;
-        RefreshContainer();
+        RefreshContainer(gridContainer);
     }
     private void PositionGridFunc()
     {
         isGridPositioned = !isGridPositioned;
         StickGridToCursor = true;
         ToggleControlls(!isGridPositioned);
-        ToggleGridButtonInput(isGridPositioned);
+        ToggleGridButtonInput(gridContainer, isGridPositioned);
     }
 
-    private void ToggleGridButtonInput(bool enable)
+    private void ToggleGridButtonInput(GridContainer gridContainer, bool enable)
     {
         foreach(var button in gridContainer.GetChildren())
         {
@@ -242,14 +242,14 @@ public partial class RoomCreator : Panel
     {
         rows += amount;
         RowCount.Text = rows.ToString();
-        RefreshContainer();
+        RefreshContainer(gridContainer);
     }
     private void AdjustColumns(int amount)
     {
         columns += amount;
         ColumnCount.Text = columns.ToString();
         gridContainer.Columns = columns;
-        RefreshContainer();
+        RefreshContainer(gridContainer);
     }
 
     private void AdjustGridSize(int size)
@@ -263,7 +263,7 @@ public partial class RoomCreator : Panel
         }
     }
 
-    private void RefreshContainer()
+    private void RefreshContainer(GridContainer gridContainer)
     {
         ParseGridData?.Invoke(new Vector2I(rows, columns));
         foreach (var button in gridContainer.GetChildren())
@@ -273,7 +273,6 @@ public partial class RoomCreator : Panel
         for (int i = 0; i < rows * columns; i++)
         {
             var button = GD.Load<PackedScene>("res://Szenen/GridButton/GridButton.tscn").Instantiate<GridButton>();
-            //try new feature
             button.Playmode = false;
             button._loadUnit = _loadUnit;
             button.DeleteObjectAction += (GridButton gbutton) =>
@@ -288,7 +287,6 @@ public partial class RoomCreator : Panel
                 button.OpenButtonpopup(position, isCellFree);
             };
             button._position = new Vector2I(i % rows, i / rows);
-            //end try
             button.CustomMinimumSize = new Vector2(buttonSize, buttonSize);
             gridContainer.AddChild(button);
         }

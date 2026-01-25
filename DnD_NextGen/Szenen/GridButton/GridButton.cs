@@ -21,7 +21,7 @@ public partial class GridButton : Button
         _gridButton = GetNode<Button>(".");
         _gridButton.Pressed += () =>
         {
-            onPressed?.Invoke(this.GlobalPosition);
+            onPressed?.Invoke(GlobalPosition);
         };
     }
 
