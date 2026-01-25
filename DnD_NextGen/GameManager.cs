@@ -17,9 +17,9 @@ public partial class GameManager : Node
         }
     }
 
-    public void PlaceObject(string name, Vector2I position)
+    public void PlaceObject(Entity entity, Vector2I position)
     {
-        Cells[position.X, position.Y].Object = name;
+        Cells[position.X, position.Y].Object = entity;
     }
     public bool IsCellFree(Vector2I position)
     {

@@ -1,6 +1,6 @@
 using Godot;
 
-public static class ChangeUnitHelper
+public static class ChangeUnitHelper                                                            //Changes only the frontend
 {
         public static void PlaceObject(GridButton targetbutton, string name, Texture2D texture)
     {

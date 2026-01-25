@@ -15,7 +15,7 @@ public partial class RoomPlayer : Panel
     private GridButton _activeButton;
     public Action<Vector2I> DeleteObjectAction;
     public Action<Vector2I> ParseGridData;
-    public Action<string, Vector2I> ParsePlacedObject;
+    public Action<Entity, Vector2I> ParsePlacedObject;
     public Action<Vector2I> MoveObject;
     public Func<Vector2I, bool> IsCellFreeFunc;
     public override void _Ready()
@@ -26,14 +26,15 @@ public partial class RoomPlayer : Panel
         _itemList.ItemSelected += (index) =>
         {
             _loadUnit.Visible = false;
-            var name = _itemList.GetItemText((int)index);
+            var basetype = _itemList.GetItemText((int)index);
             var texture = _itemList.GetItemIcon((int)index);
             _textFieldPopup.Visible = true;
-            _textFieldPopup.SetText(name);
+            _textFieldPopup.SetText(basetype);
             _textFieldPopup.onConfirm += (name) =>
             {
-                ChangeUnitHelper.PlaceObject(_activeButton, name, texture);
-                ParsePlacedObject?.Invoke(name, _activeButton._position);
+                var entity = new Entity(name, basetype, texture);
+                ChangeUnitHelper.PlaceObject(_activeButton, entity.name, entity.icon);
+                ParsePlacedObject?.Invoke(entity, _activeButton._position);
                 _itemList.DeselectAll();
             };
         };

@@ -44,7 +44,7 @@ public partial class RoomCreator : Panel
     private Dictionary<int, Vector2I> Fingers = new Dictionary<int, Vector2I>();
     public Func<Vector2I, bool> IsCellFreeFunc;
     public Action<Vector2I> DeleteObjectAction;
-    public Action<string, Vector2I> ParsePlacedObject;
+    public Action<Entity, Vector2I> ParsePlacedObject;
     public Action<Vector2I> ParseGridData;
     public override void _Ready()
     {
@@ -53,15 +53,16 @@ public partial class RoomCreator : Panel
         LoadUnitTextfieldPopup = GetNode<TextFieldPopup>("LoadUnitTextfieldPopup");
         _itemList.ItemSelected += (index) =>
         {
-            _loadUnit.Visible = false;
-            var name = _itemList.GetItemText((int)index);
+            _loadUnit.Visible = false;//ansatz hier
+            var basetype = _itemList.GetItemText((int)index);
             var texture = _itemList.GetItemIcon((int)index);
             LoadUnitTextfieldPopup.Visible = true;
-            LoadUnitTextfieldPopup.SetText(name);
+            LoadUnitTextfieldPopup.SetText(basetype);
             LoadUnitTextfieldPopup.onConfirm += (name) =>
             {
-                ChangeUnitHelper.PlaceObject(activeButton, name, texture);
-                ParsePlacedObject?.Invoke(name, activeButton._position);
+                var entity = new Entity(name, basetype, texture);
+                ChangeUnitHelper.PlaceObject(activeButton, entity.name, entity.icon);
+                ParsePlacedObject?.Invoke(entity, activeButton._position);
                 _itemList.DeselectAll();
             };
         };

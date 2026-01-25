@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using Godot;
 
@@ -41,5 +42,23 @@ public class LoadRoomTemplatesProvider
             return (JsonSerializer.Deserialize<Room>(data, new JsonSerializerOptions { IncludeFields = true }), texture);
         }
         return (JsonSerializer.Deserialize<Room>(data, new JsonSerializerOptions { IncludeFields = true }), null);
+    }
+
+    public static void DeleteRoom(string roomName)
+    {
+        if(DirAccess.DirExistsAbsolute("user://SavedRooms/" + roomName))
+        {
+            ClearDirectory("user://SavedRooms/" + roomName);
+            DirAccess.RemoveAbsolute("user://SavedRooms/" + roomName);
+        }
+    }
+
+    private static void ClearDirectory(string path)
+    {
+        var dir = DirAccess.Open(path);
+        while(!DirAccess.GetFilesAt(path).IsEmpty())
+        {
+            dir.Remove(Path.Combine(path, DirAccess.GetFilesAt(path).First()));
+        }
     }
 }
