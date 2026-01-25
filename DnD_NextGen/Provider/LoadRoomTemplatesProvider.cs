@@ -1,14 +1,13 @@
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
 using Godot;
 
 public class LoadRoomTemplatesProvider
 {
-    public static List<(string, ImageTexture)> LoadAllRoomPreview()
+    public static List<(string roomName, ImageTexture background)> LoadAllRoomPreview()
     {
-        var list = new List<(string, ImageTexture)>();
+        var list = new List<(string roomName, ImageTexture background)>();
         foreach (var room in DirAccess.GetDirectoriesAt("user://SavedRooms/"))
         {
             var path = "user://SavedRooms/" + Path.Combine(room, "map.png");
