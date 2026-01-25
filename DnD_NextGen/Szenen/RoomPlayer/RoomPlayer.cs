@@ -32,8 +32,8 @@ public partial class RoomPlayer : Panel
             _textFieldPopup.SetText(basetype);
             _textFieldPopup.onConfirm += (name) =>
             {
-                var entity = new Entity(name, basetype, texture);
-                ChangeUnitHelper.PlaceObject(_activeButton, entity.name, entity.icon);
+                var entity = new Entity(name, basetype);
+                ChangeUnitHelper.PlaceObject(_activeButton, entity.name, texture);
                 ParsePlacedObject?.Invoke(entity, _activeButton._position);
                 _itemList.DeselectAll();
             };

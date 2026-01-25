@@ -5,11 +5,14 @@ public partial class GameManager : Node
 {
     public SceneTree tree;
     private Cell[,] Cells;
+    private Vector2I Gridsize;
     private Vector2I? grabbedFrom;
+    private string RoomName;
     public Action<Vector2I, Vector2I> SwapObjectsAction;
 
     public void InitCells(Vector2I dimension)
     {
+        Gridsize = dimension;
         Cells = new Cell[dimension.X, dimension.Y];
         for (var i = 0; i < dimension.X * dimension.Y; i++)
         {
@@ -49,5 +52,16 @@ public partial class GameManager : Node
     public void DeleteObject(Vector2I position)
     {
         PlaceObject(null, position);
+    }
+    public void SaveRoom(Vector2 position, int Cellsize, string RoomName, Texture2D Background)
+    {
+        this.RoomName = RoomName;
+        var room = new RoomTemplate();
+        room.GridPosition = position;
+        room.GridSize = Gridsize;
+        room.ButtonSize = Cellsize;
+        room.Name = RoomName;
+        foreach(var cell in Cells) room.Cells.Add(cell);
+        LoadRoomTemplatesProvider.SaveRoom(room, Background);
     }
 }

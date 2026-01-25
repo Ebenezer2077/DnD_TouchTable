@@ -18,5 +18,6 @@ public static class PlayerManagerConnector
         roomCreator.IsCellFreeFunc += gameManager.IsCellFree;
         roomCreator.DeleteObjectAction += gameManager.DeleteObject;
         roomCreator.ParsePlacedObject += gameManager.PlaceObject;
+        roomCreator.SaveRoomAction += gameManager.SaveRoom;
     }
 }

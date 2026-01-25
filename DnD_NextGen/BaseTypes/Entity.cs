@@ -1,8 +1,5 @@
-using Godot;
-
-public class Entity(string Name, string Basetype, Texture2D Icon)
+public class Entity(string Name, string Basetype)
 {
     public string name {get;} = Name;
     public string basetype {get;} = Basetype;
-    public Texture2D icon {get;} = Icon;
 }

@@ -39,7 +39,12 @@ public class LoadRoomTemplatesProvider
             var image = new Image();
             var err = image.Load(path);
             var texture = ImageTexture.CreateFromImage(image);
-            return (JsonSerializer.Deserialize<Room>(data, new JsonSerializerOptions { IncludeFields = true }), texture);
+            var RoomTemplate = (JsonSerializer.Deserialize<RoomTemplate>(data, new JsonSerializerOptions { IncludeFields = true }), texture);
+            var Cells = new Cell[RoomTemplate.Item1.GridSize.X, RoomTemplate.Item1.GridSize.Y];
+            foreach(var Cell in RoomTemplate.Item1.Cells)
+            {
+                Cells[Cell.position.X, Cell.position.Y] = Cell;
+            }
         }
         return (JsonSerializer.Deserialize<Room>(data, new JsonSerializerOptions { IncludeFields = true }), null);
     }
@@ -60,5 +65,17 @@ public class LoadRoomTemplatesProvider
         {
             dir.Remove(Path.Combine(path, DirAccess.GetFilesAt(path).First()));
         }
+    }
+
+    public static void SaveRoom(RoomTemplate room, Texture2D Background)
+    {
+        var path = "user://SavedRooms/" + room.Name;
+        var dir = DirAccess.Open("user://");
+        dir.MakeDirRecursive("SavedRooms/" + room.Name);
+        var data = JsonSerializer.Serialize(room, new JsonSerializerOptions { IncludeFields = true });
+        Background?.GetImage()?.SavePng(path + "/map.png");
+        var file = Godot.FileAccess.Open(path + "/data.json", Godot.FileAccess.ModeFlags.Write);
+        file.StoreLine(data);
+        file.Close();
     }
 }

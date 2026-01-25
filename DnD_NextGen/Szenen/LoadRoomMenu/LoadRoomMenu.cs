@@ -13,7 +13,7 @@ public partial class LoadRoomMenu : PanelContainer
     public override void _Ready()
     {
         Cancel = GetNode<Button>("VBoxContainer/HBoxContainer/Cancel");
-        Cancel.Pressed += () => Visible = false;
+        Cancel.Pressed += () => GetTree().ChangeSceneToFile("res://Szenen/MainMenu/MainMenu.tscn");
         RoomList = GetNode<ItemList>("VBoxContainer/ItemList");
         RoomList.ItemSelected += (i) => {
             index = i;

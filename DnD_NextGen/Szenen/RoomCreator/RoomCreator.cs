@@ -46,6 +46,7 @@ public partial class RoomCreator : Panel
     public Action<Vector2I> DeleteObjectAction;
     public Action<Entity, Vector2I> ParsePlacedObject;
     public Action<Vector2I> ParseGridData;
+    public Action<Vector2, int, string, Texture2D> SaveRoomAction;
     public override void _Ready()
     {
         _loadUnit = GetNode<PanelContainer>("LoadUnit");
@@ -53,15 +54,15 @@ public partial class RoomCreator : Panel
         LoadUnitTextfieldPopup = GetNode<TextFieldPopup>("LoadUnitTextfieldPopup");
         _itemList.ItemSelected += (index) =>
         {
-            _loadUnit.Visible = false;//ansatz hier
+            _loadUnit.Visible = false;
             var basetype = _itemList.GetItemText((int)index);
             var texture = _itemList.GetItemIcon((int)index);
             LoadUnitTextfieldPopup.Visible = true;
             LoadUnitTextfieldPopup.SetText(basetype);
             LoadUnitTextfieldPopup.onConfirm += (name) =>
             {
-                var entity = new Entity(name, basetype, texture);
-                ChangeUnitHelper.PlaceObject(activeButton, entity.name, entity.icon);
+                var entity = new Entity(name, basetype);
+                ChangeUnitHelper.PlaceObject(activeButton, entity.name, texture);
                 ParsePlacedObject?.Invoke(entity, activeButton._position);
                 _itemList.DeselectAll();
             };
@@ -69,13 +70,13 @@ public partial class RoomCreator : Panel
         loadRoomMenu = GetNode<LoadRoomMenu>("LoadRoomMenu");
         loadRoomMenu.LoadRoom += LoadRoomFunc;
         textFieldPopup = GetNode<TextFieldPopup>("TextFieldPopup");
+        Map = GetNode<TextureRect>("TextureRect");
         SaveRoom = GetNode<Button>("MarginContainer/VBoxContainer4/SaveRoom");
         SaveRoom.Pressed += () =>
         {
             if (RoomName.Equals("")) textFieldPopup.Visible = true;
-            else SaveRoomFunc(RoomName);
+            else SaveRoomAction?.Invoke(gridContainer.GlobalPosition, buttonSize, RoomName, Map.Texture);
         };
-        Map = GetNode<TextureRect>("TextureRect");
         fileDialog = GetNode<FileDialog>("FileDialog");
         fileDialog.Access = FileDialog.AccessEnum.Filesystem;
         fileDialog.FileMode = FileDialog.FileModeEnum.OpenFile;
@@ -114,7 +115,10 @@ public partial class RoomCreator : Panel
             loadRoomMenu.Visible = true;
             loadRoomMenu.InitRoomList();
         };
-        textFieldPopup.onConfirm += SaveRoomFunc;
+        textFieldPopup.onConfirm += (s) => {
+            RoomName = s;
+            SaveRoomAction?.Invoke(gridContainer.GlobalPosition, buttonSize, RoomName, Map.Texture);
+        };
         ConfirmPlace = GetNode<Button>("MarginContainer/VBoxContainer4/Confirm");
         ConfirmPlace.Pressed += PositionGridFunc;
         InitLoadUnit();
@@ -171,19 +175,6 @@ public partial class RoomCreator : Panel
     private void AdjustGridPosition(Vector2 Position)
     {
         gridContainer.Position = Position;
-    }
-    private void SaveRoomFunc(string name)
-    {
-        this.RoomName = name;
-        var path = "user://SavedRooms/" + name;
-        var dir = DirAccess.Open("user://");
-        dir.MakeDirRecursive("SavedRooms/" + name);
-        var room = new Room(gridContainer.GlobalPosition, new Vector2(rows, columns), buttonSize, name);
-        var data = JsonSerializer.Serialize(room, new JsonSerializerOptions { IncludeFields = true });
-        Map.Texture?.GetImage()?.SavePng(path + "/map.png");
-        var file = FileAccess.Open(path + "/data.json", FileAccess.ModeFlags.Write);
-        file.StoreLine(data);
-        file.Close();
     }
     private void LoadRoomFunc(string name)
     {
