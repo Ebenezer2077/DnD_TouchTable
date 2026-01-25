@@ -177,7 +177,7 @@ public partial class RoomCreator : Panel
         var path = "user://SavedRooms/" + name;
         var dir = DirAccess.Open("user://");
         dir.MakeDirRecursive("SavedRooms/" + name);
-        var room = new RoomTemplate(gridContainer.GlobalPosition, new Vector2(rows, columns), buttonSize, name);
+        var room = new Room(gridContainer.GlobalPosition, new Vector2(rows, columns), buttonSize, name);
         var data = JsonSerializer.Serialize(room, new JsonSerializerOptions { IncludeFields = true });
         Map.Texture?.GetImage()?.SavePng(path + "/map.png");
         var file = FileAccess.Open(path + "/data.json", FileAccess.ModeFlags.Write);
@@ -188,13 +188,13 @@ public partial class RoomCreator : Panel
     {
         loadRoomMenu.Visible = false;
         var roomData = LoadRoomTemplatesProvider.LoadRoom(name);
-        var room = roomData.Item1;
+        var room = roomData.room;
         RoomName = room.Name;
         InitColumns((int)room.GridSize.X);
         InitRows((int)room.GridSize.Y);
         AdjustGridSize(room.ButtonSize);
         AdjustGridPosition(room.GridPosition);
-        Map.Texture = roomData.Item2;
+        Map.Texture = roomData.background;
         RefreshContainer(gridContainer);
     }
     private void PositionGridFunc()

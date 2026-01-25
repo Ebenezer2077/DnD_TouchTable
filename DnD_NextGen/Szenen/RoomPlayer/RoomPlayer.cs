@@ -58,13 +58,13 @@ public partial class RoomPlayer : Panel
     private void LoadRoom(string name)
     {
         var roomData = LoadRoomTemplatesProvider.LoadRoom(name);
-        var buttonSize = roomData.Item1.ButtonSize;
-        var GridPosition = roomData.Item1.GridPosition;
-        var columns = (int)roomData.Item1.GridSize.X;
-        var rows = (int)roomData.Item1.GridSize.Y;
+        var buttonSize = roomData.room.ButtonSize;
+        var GridPosition = roomData.room.GridPosition;
+        var columns = (int)roomData.room.GridSize.X;
+        var rows = (int)roomData.room.GridSize.Y;
         ParseGridData?.Invoke(new Vector2I(rows, columns));
-        _map.Texture = roomData.Item2;
-        _gridcontainer.Columns = (int)roomData.Item1.GridSize.X;
+        _map.Texture = roomData.background;
+        _gridcontainer.Columns = (int)roomData.room.GridSize.X;
         _gridcontainer.Position = GridPosition;
         for (var i = 0; i < columns * rows; i++)
         {

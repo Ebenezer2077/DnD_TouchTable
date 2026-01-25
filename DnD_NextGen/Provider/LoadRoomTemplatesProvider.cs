@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
 using Godot;
@@ -27,7 +28,7 @@ public class LoadRoomTemplatesProvider
         return list;
     }
     
-    public static (RoomTemplate, ImageTexture) LoadRoom(string roomName)//only name not full directory
+    public static (Room room, ImageTexture background) LoadRoom(string roomName)//only name not full directory
     {
         var file = Godot.FileAccess.Open("user://SavedRooms/" + Path.Combine(roomName, "data.json"), Godot.FileAccess.ModeFlags.Read);
         var data = file.GetAsText();
@@ -38,8 +39,8 @@ public class LoadRoomTemplatesProvider
             var image = new Image();
             var err = image.Load(path);
             var texture = ImageTexture.CreateFromImage(image);
-            return (JsonSerializer.Deserialize<RoomTemplate>(data, new JsonSerializerOptions { IncludeFields = true }), texture);
+            return (JsonSerializer.Deserialize<Room>(data, new JsonSerializerOptions { IncludeFields = true }), texture);
         }
-        return (JsonSerializer.Deserialize<RoomTemplate>(data, new JsonSerializerOptions { IncludeFields = true }), null);
+        return (JsonSerializer.Deserialize<Room>(data, new JsonSerializerOptions { IncludeFields = true }), null);
     }
 }
