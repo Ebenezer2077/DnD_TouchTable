@@ -11,7 +11,7 @@ public partial class GameManager : Node
     public void InitCells(Vector2I dimension)
     {
         Cells = new Cell[dimension.X, dimension.Y];
-        for (var i = 0; i < dimension.X * dimension.Y - 1; i++)
+        for (var i = 0; i < dimension.X * dimension.Y; i++)
         {
             Cells[i % dimension.X, i / dimension.X] = new Cell { position = new Vector2I(i % dimension.X, i / dimension.X) };
         }

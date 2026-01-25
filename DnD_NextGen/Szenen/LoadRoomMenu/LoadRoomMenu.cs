@@ -20,7 +20,7 @@ public partial class LoadRoomMenu : PanelContainer
         var roomList = LoadRoomTemplatesProvider.LoadAllRoomPreview();
         foreach (var room in roomList)
         {
-            RoomList.AddItem(room.Item1, room.Item2);
+            RoomList.AddItem(room.roomName, room.background);
         }
     }
 }

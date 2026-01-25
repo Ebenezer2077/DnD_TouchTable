@@ -32,7 +32,7 @@ public partial class RoomPlayer : Panel
             _textFieldPopup.SetText(name);
             _textFieldPopup.onConfirm += (name) =>
             {
-                PlaceObject(_activeButton, name, texture);
+                ChangeUnitHelper.PlaceObject(_activeButton, name, texture);
                 ParsePlacedObject?.Invoke(name, _activeButton._position);
                 _itemList.DeselectAll();
             };
@@ -48,7 +48,6 @@ public partial class RoomPlayer : Panel
             _loadRoomMenu.Visible = false;
         };
         InitLoadUnit();
-        InitPopupMenuHandlíng();
     }
 
     public override void _Input(InputEvent @event)
@@ -59,17 +58,28 @@ public partial class RoomPlayer : Panel
     private void LoadRoom(string name)
     {
         var roomData = LoadRoomTemplatesProvider.LoadRoom(name);
-        var buttonSize = roomData.Item1.ButtonSize;
-        var GridPosition = roomData.Item1.GridPosition;
-        var columns = (int)roomData.Item1.GridSize.X;
-        var rows = (int)roomData.Item1.GridSize.Y;
+        var buttonSize = roomData.room.ButtonSize;
+        var GridPosition = roomData.room.GridPosition;
+        var columns = (int)roomData.room.GridSize.X;
+        var rows = (int)roomData.room.GridSize.Y;
         ParseGridData?.Invoke(new Vector2I(rows, columns));
-        _map.Texture = roomData.Item2;
-        _gridcontainer.Columns = (int)roomData.Item1.GridSize.X;
+        _map.Texture = roomData.background;
+        _gridcontainer.Columns = (int)roomData.room.GridSize.X;
         _gridcontainer.Position = GridPosition;
         for (var i = 0; i < columns * rows; i++)
         {
             var button = GD.Load<PackedScene>("res://Szenen/GridButton/GridButton.tscn").Instantiate<GridButton>();
+            button._loadUnit = _loadUnit;
+            button.MoveObject += (Vector2I position) =>
+            {
+                MoveObject?.Invoke(position);
+                _isMovingActionActive = !_isMovingActionActive;
+            };
+            button.DeleteObjectAction += (GridButton gButton) =>
+            {
+                ChangeUnitHelper.DeleteObject(gButton);
+                DeleteObjectAction?.Invoke(gButton._position);
+            };
             button.onPressed += (position) =>
             {
                 _activeButton = button;
@@ -81,7 +91,7 @@ public partial class RoomPlayer : Panel
                     return;
                 }
                 var isCellFree = (bool)IsCellFreeFunc?.Invoke(button._position);
-                OpenButtonpopup(position, isCellFree);
+                button.OpenButtonpopup(position, isCellFree);
             };
             button.CustomMinimumSize = new Vector2(buttonSize, buttonSize);
             button.Playmode = true;
@@ -90,66 +100,14 @@ public partial class RoomPlayer : Panel
         }
     }
 
-    private void OpenButtonpopup(Vector2 globalPosition, bool isCellFree)
-    {
-        InitPopupMenu(isCellFree);
-        _popupMenu.Visible = true;
-        _popupMenu.Position = new Vector2I((int)globalPosition.X, (int)globalPosition.Y);
-    }
-    
-    private void InitPopupMenu(bool isCellFree)
-    {
-        _popupMenu.Clear();
-        if(isCellFree) _popupMenu.AddItem("PlaceObject", 0);
-        else
-        {
-            _popupMenu.AddItem("MoveObject", 1);
-            _popupMenu.AddItem("DeleteObject", 2);
-        }
-    }
-
-    private void InitPopupMenuHandlíng()
-    {
-        _popupMenu.IdPressed += (id) =>
-        {
-            switch (id)
-            {
-                case 0:
-                    _loadUnit.Visible = true;
-                    break;
-                case 1:
-                    MoveObject?.Invoke(_activeButton._position);
-                    _isMovingActionActive = !_isMovingActionActive;
-                    break;
-                case 2:
-                    DeleteObject(_activeButton);
-                    DeleteObjectAction?.Invoke(_activeButton._position);
-                    break;
-            }
-
-        };
-    }
-
     public void SwapObjects(Vector2I from, Vector2I to)
     {
         var fromButton = _gridcontainer.GetChildren().OfType<GridButton>().Where(x => x._position.X == from.X && x._position.Y == from.Y).First();
         var toButton = _gridcontainer.GetChildren().OfType<GridButton>().Where(x => x._position.X == to.X && x._position.Y == to.Y).First();
 
         var holder = (name: fromButton.TooltipText, texture: fromButton.Icon);
-        PlaceObject(fromButton, toButton.TooltipText, toButton.Icon);
-        PlaceObject(toButton, holder.name, holder.texture);
-    }
-
-    private void PlaceObject(GridButton targetbutton, string name, Texture2D texture)
-    {
-        targetbutton.TooltipText = name;
-        targetbutton.Icon = texture;
-    }
-
-    private void DeleteObject(GridButton targetButton)
-    {
-        targetButton.TooltipText = null;
-        targetButton.Icon = null;
+        ChangeUnitHelper.PlaceObject(fromButton, toButton.TooltipText, toButton.Icon);
+        ChangeUnitHelper.PlaceObject(toButton, holder.name, holder.texture);
     }
 
     private void InitLoadUnit()
