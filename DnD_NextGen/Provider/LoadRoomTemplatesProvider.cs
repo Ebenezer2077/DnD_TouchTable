@@ -39,12 +39,14 @@ public class LoadRoomTemplatesProvider
             var image = new Image();
             var err = image.Load(path);
             var texture = ImageTexture.CreateFromImage(image);
-            var RoomTemplate = (JsonSerializer.Deserialize<RoomTemplate>(data, new JsonSerializerOptions { IncludeFields = true }), texture);
-            var Cells = new Cell[RoomTemplate.Item1.GridSize.X, RoomTemplate.Item1.GridSize.Y];
-            foreach(var Cell in RoomTemplate.Item1.Cells)
+            var RoomTemplateTuple = (JsonSerializer.Deserialize<RoomTemplate>(data, new JsonSerializerOptions { IncludeFields = true }), texture);
+            var RoomTemplate = RoomTemplateTuple.Item1;
+            var Cells = new Cell[RoomTemplate.GridSize.X, RoomTemplate.GridSize.Y];
+            foreach(var Cell in RoomTemplate.Cells)
             {
-                Cells[Cell.position.X, Cell.position.Y] = Cell;
+                Cells[(int)Cell.position.X, (int)Cell.position.Y] = Cell;
             }
+            return (new Room(new Vector2(RoomTemplate.GridPosition.X, RoomTemplate.GridPosition.Y), RoomTemplate.GridSize, RoomTemplate.ButtonSize, RoomTemplate.Name, Cells), RoomTemplateTuple.texture);
         }
         return (JsonSerializer.Deserialize<Room>(data, new JsonSerializerOptions { IncludeFields = true }), null);
     }

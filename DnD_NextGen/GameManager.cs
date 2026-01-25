@@ -16,7 +16,7 @@ public partial class GameManager : Node
         Cells = new Cell[dimension.X, dimension.Y];
         for (var i = 0; i < dimension.X * dimension.Y; i++)
         {
-            Cells[i % dimension.X, i / dimension.X] = new Cell { position = new Vector2I(i % dimension.X, i / dimension.X) };
+            Cells[i % dimension.X, i / dimension.X] = new Cell { position = new System.Numerics.Vector2(i % dimension.X, i / dimension.X) };
         }
     }
 
