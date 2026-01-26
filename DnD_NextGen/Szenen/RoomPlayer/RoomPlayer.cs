@@ -18,6 +18,7 @@ public partial class RoomPlayer : Panel
     public Action<Entity, Vector2I> ParsePlacedObject;
     public Action<Vector2I> MoveObject;
     public Func<Vector2I, bool> IsCellFreeFunc;
+    public Action<Cell[,]> UpdateCells;
     public override void _Ready()
     {
         _textFieldPopup = GetNode<TextFieldPopup>("TextFieldPopup");
@@ -56,20 +57,31 @@ public partial class RoomPlayer : Panel
         if (@event.IsActionPressed("Back")) GetTree().ChangeSceneToFile("res://Szenen/MainMenu/MainMenu.tscn");
     }
 
-    private void LoadRoom(string name)
+    private void LoadRoom(string name)//need to load objects 
     {
         var roomData = LoadRoomTemplatesProvider.LoadRoom(name);
         var buttonSize = roomData.room.ButtonSize;
         var GridPosition = roomData.room.GridPosition;
         var columns = (int)roomData.room.GridSize.X;
         var rows = (int)roomData.room.GridSize.Y;
-        ParseGridData?.Invoke(new Vector2I(rows, columns));
+        var dimension = new Vector2I(rows, columns);
+        ParseGridData?.Invoke(dimension);
+        UpdateCells?.Invoke(roomData.room.Cells);
         _map.Texture = roomData.background;
         _gridcontainer.Columns = (int)roomData.room.GridSize.X;
         _gridcontainer.Position = GridPosition;
         for (var i = 0; i < columns * rows; i++)
         {
             var button = GD.Load<PackedScene>("res://Szenen/GridButton/GridButton.tscn").Instantiate<GridButton>();
+            //load entity here
+            var cell = roomData.room.Cells[i % dimension.X, i / dimension.X];
+            if(cell.Object != null)
+            {
+                var type = cell.Object.basetype;
+                var texture = LoadUnitsProvider.LoadAllUnits().Find(x => x.Item1 == type).Item2;
+                ChangeUnitHelper.PlaceObject(button, roomData.room.Name, texture);
+            }
+            //end
             button._loadUnit = _loadUnit;
             button.MoveObject += (Vector2I position) =>
             {

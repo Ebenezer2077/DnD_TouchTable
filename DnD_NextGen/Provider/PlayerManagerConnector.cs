@@ -9,6 +9,7 @@ public static class PlayerManagerConnector
         roomPlayer.IsCellFreeFunc += gameManager.IsCellFree;
         roomPlayer.MoveObject += gameManager.MoveObject;
         roomPlayer.DeleteObjectAction += gameManager.DeleteObject;
+        roomPlayer.UpdateCells += gameManager.LoadCells;
         gameManager.SwapObjectsAction += roomPlayer.SwapObjects;
     }
 

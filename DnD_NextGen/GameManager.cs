@@ -20,6 +20,11 @@ public partial class GameManager : Node
         }
     }
 
+    public void LoadCells(Cell[,] cells)
+    {
+        Cells = cells;
+    }
+
     public void PlaceObject(Entity entity, Vector2I position)
     {
         Cells[position.X, position.Y].Object = entity;
