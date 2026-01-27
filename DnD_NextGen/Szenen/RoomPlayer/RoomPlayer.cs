@@ -13,6 +13,7 @@ public partial class RoomPlayer : Panel
     private ItemList _itemList;
     private GridButton _activeButton;
     private Button SaveRoomButton;
+    private Button ExitButton;
     private string RoomName;
     private int buttonSize;
     public Action<Vector2I> DeleteObjectAction;
@@ -57,6 +58,8 @@ public partial class RoomPlayer : Panel
         {
             SaveRoomAction?.Invoke(_gridcontainer.Position, buttonSize, RoomName, _map.Texture);
         };
+        ExitButton = GetNode<Button>("MarginContainer/Exit");
+        ExitButton.Pressed += () => GetTree().ChangeSceneToFile("res://Szenen/MainMenu/MainMenu.tscn");
         InitLoadUnit();
     }
 
@@ -116,8 +119,8 @@ public partial class RoomPlayer : Panel
 
     public void SwapObjects(Vector2I from, Vector2I to)
     {
-        var fromButton = _gridcontainer.GetChildren().OfType<GridButton>().Where(x => x._position.X == from.X && x._position.Y == from.Y).First();
-        var toButton = _gridcontainer.GetChildren().OfType<GridButton>().Where(x => x._position.X == to.X && x._position.Y == to.Y).First();
+        var fromButton = _gridcontainer.GetChildren().OfType<GridButton>().First(x => x._position.X == from.X && x._position.Y == from.Y);
+        var toButton = _gridcontainer.GetChildren().OfType<GridButton>().First(x => x._position.X == to.X && x._position.Y == to.Y);
 
         var holder = (name: fromButton.TooltipText, texture: fromButton.Icon);
         ChangeUnitHelper.PlaceObject(fromButton, toButton.TooltipText, toButton.Icon);
@@ -127,9 +130,6 @@ public partial class RoomPlayer : Panel
     private void InitLoadUnit()
     {
         var list = LoadUnitsProvider.LoadAllUnits();
-        foreach(var unit in list)
-        {
-            _itemList.AddItem(unit.Item1, unit.Item2);
-        }
+        foreach(var unit in list) _itemList.AddItem(unit.Item1, unit.Item2);
     }
 }

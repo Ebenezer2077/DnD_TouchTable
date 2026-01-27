@@ -159,6 +159,13 @@ custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 text = "Confirm"
 
+[node name="Exit" type="Button" parent="MarginContainer"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+text = "Exit"
+
 [node name="TextFieldPopup" parent="." instance=ExtResource("3_djl0u")]
 visible = false
 layout_mode = 1
