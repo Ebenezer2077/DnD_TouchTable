@@ -57,8 +57,7 @@ public class LoadUnitsProvider
 
     public static ImageTexture LoadUnit(string basetype)
     {
-        var path = "user://SavedUnits/" + basetype;
-        //if (Godot.FileAccess.FileExists(path + "/" + file))                                       //can be optimized
+        var path = "user://SavedUnits/" + basetype;                                      //can be optimized
         if(DirAccess.DirExistsAbsolute(path))
         {
             var image = new Image();
@@ -71,9 +70,9 @@ public class LoadUnitsProvider
         var defaultPath = "res://Defaults/Units/" + basetype;
         if(DirAccess.DirExistsAbsolute(defaultPath))
         {
-            var image = new Image();
             var defaultFile = DirAccess.GetFilesAt(defaultPath).FirstOrDefault(x => x.Contains(".png") || x.Contains(".jpg"));
-            var err = image.Load(defaultPath + "/" + defaultFile);
+            Texture2D texture2d = ResourceLoader.Load<Texture2D>(defaultPath + "/" + defaultFile);
+            var image = texture2d.GetImage();
             var texture = ImageTexture.CreateFromImage(image);
             texture.SetSizeOverride(new Vector2I(100, 100));
             return texture;
