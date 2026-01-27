@@ -15,9 +15,10 @@ public partial class RoomPlayer : Panel
     private GridButton _activeButton;
     public Action<Vector2I> DeleteObjectAction;
     public Action<Vector2I> ParseGridData;
-    public Action<string, Vector2I> ParsePlacedObject;
+    public Action<Entity, Vector2I> ParsePlacedObject;
     public Action<Vector2I> MoveObject;
     public Func<Vector2I, bool> IsCellFreeFunc;
+    public Action<Cell[,]> UpdateCells;
     public override void _Ready()
     {
         _textFieldPopup = GetNode<TextFieldPopup>("TextFieldPopup");
@@ -26,14 +27,15 @@ public partial class RoomPlayer : Panel
         _itemList.ItemSelected += (index) =>
         {
             _loadUnit.Visible = false;
-            var name = _itemList.GetItemText((int)index);
+            var basetype = _itemList.GetItemText((int)index);
             var texture = _itemList.GetItemIcon((int)index);
             _textFieldPopup.Visible = true;
-            _textFieldPopup.SetText(name);
+            _textFieldPopup.SetText(basetype);
             _textFieldPopup.onConfirm += (name) =>
             {
-                ChangeUnitHelper.PlaceObject(_activeButton, name, texture);
-                ParsePlacedObject?.Invoke(name, _activeButton._position);
+                var entity = new Entity(name, basetype);
+                ChangeUnitHelper.PlaceObject(_activeButton, entity.name, texture);
+                ParsePlacedObject?.Invoke(entity, _activeButton._position);
                 _itemList.DeselectAll();
             };
         };
@@ -55,20 +57,24 @@ public partial class RoomPlayer : Panel
         if (@event.IsActionPressed("Back")) GetTree().ChangeSceneToFile("res://Szenen/MainMenu/MainMenu.tscn");
     }
 
-    private void LoadRoom(string name)
+    private void LoadRoom(string name)//need to load objects 
     {
         var roomData = LoadRoomTemplatesProvider.LoadRoom(name);
         var buttonSize = roomData.room.ButtonSize;
         var GridPosition = roomData.room.GridPosition;
         var columns = (int)roomData.room.GridSize.X;
         var rows = (int)roomData.room.GridSize.Y;
-        ParseGridData?.Invoke(new Vector2I(rows, columns));
+        var dimension = new Vector2I(rows, columns);
+        ParseGridData?.Invoke(dimension);
+        UpdateCells?.Invoke(roomData.room.Cells);
         _map.Texture = roomData.background;
         _gridcontainer.Columns = (int)roomData.room.GridSize.X;
         _gridcontainer.Position = GridPosition;
         for (var i = 0; i < columns * rows; i++)
         {
             var button = GD.Load<PackedScene>("res://Szenen/GridButton/GridButton.tscn").Instantiate<GridButton>();
+            var cell = roomData.room.Cells[i % dimension.X, i / dimension.X];
+            if(cell.Object != null) ChangeUnitHelper.LoadObjectInButton(cell.Object, button);
             button._loadUnit = _loadUnit;
             button.MoveObject += (Vector2I position) =>
             {

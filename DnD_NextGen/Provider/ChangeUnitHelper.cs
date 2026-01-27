@@ -1,6 +1,6 @@
 using Godot;
 
-public static class ChangeUnitHelper
+public static class ChangeUnitHelper                                                            //Changes only the frontend
 {
         public static void PlaceObject(GridButton targetbutton, string name, Texture2D texture)
     {
@@ -12,5 +12,12 @@ public static class ChangeUnitHelper
     {
         targetButton.TooltipText = null;
         targetButton.Icon = null;
+    }
+
+    public static void LoadObjectInButton(Entity entity, GridButton button)
+    {
+        var type = entity.basetype;
+        var texture = LoadUnitsProvider.LoadAllUnits().Find(x => x.Item1 == type).Item2;
+        PlaceObject(button, entity.name, texture);
     }
 }

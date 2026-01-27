@@ -32,6 +32,26 @@ public class LoadUnitsProvider//rename
         }
         return list;
     }
+
+    public static ImageTexture LoadUnit(string basetype)
+    {
+        var dir = DirAccess.Open("user://SavedUnits");
+        var path = Path.Combine("user://SavedUnits", basetype);
+        var file = DirAccess.GetFilesAt(path).First(x => x.Contains(".png") || x.Contains(".jpg"));
+        if (Godot.FileAccess.FileExists(Path.Combine(path, file)))                                       //can be optimized
+        {
+            var image = new Image();
+            var err = image.Load(Path.Combine(path, file));
+            var texture = ImageTexture.CreateFromImage(image);
+            texture.SetSizeOverride(new Vector2I(100, 100));
+            return texture;
+        }
+        else
+        {
+            var image = Image.CreateEmpty(100, 100, false, Image.Format.Rgba8);
+            return ImageTexture.CreateFromImage(image);
+        }
+    }
     
     public static void SaveUnit(string from, string name)
     {
