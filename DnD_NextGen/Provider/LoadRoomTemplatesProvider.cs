@@ -9,6 +9,16 @@ public class LoadRoomTemplatesProvider
     public static List<(string roomName, ImageTexture background)> LoadAllRoomPreview()
     {
         var list = new List<(string roomName, ImageTexture background)>();
+        var defaultDir = DirAccess.Open("res://Defaults/Rooms");
+        foreach (var room in defaultDir.GetDirectories())
+        {
+            var path = "res://Defaults/Rooms/" + room + "/map.png";
+            Texture2D texture2d = ResourceLoader.Load<Texture2D>(path);
+            var image = texture2d.GetImage();
+            var texture = ImageTexture.CreateFromImage(image);
+            texture.SetSizeOverride(new Vector2I(100, 100));
+            list.Add((room, texture));
+        }
         foreach (var room in DirAccess.GetDirectoriesAt("user://SavedRooms/"))
         {
             var path = "user://SavedRooms/" + Path.Combine(room, "map.png");
@@ -28,26 +38,50 @@ public class LoadRoomTemplatesProvider
         return list;
     }
     
-    public static (Room room, ImageTexture background) LoadRoom(string roomName)//only name not full directory
+    public static (Room room, ImageTexture background, bool isDefault) LoadRoom(string roomName)//only name not full directory
     {
-        var file = Godot.FileAccess.Open("user://SavedRooms/" + Path.Combine(roomName, "data.json"), Godot.FileAccess.ModeFlags.Read);
-        var data = file.GetAsText();
-        file.Close();
-        var path = "user://SavedRooms/" + Path.Combine(roomName, "map.png");
-        ImageTexture texture = null;
-        if(Godot.FileAccess.FileExists(path))
+        if(DirAccess.DirExistsAbsolute("user://SavedRooms/" + roomName))
         {
-            var image = new Image();
-            var err = image.Load(path);
-            texture = ImageTexture.CreateFromImage(image);
-        }
-        var RoomTemplate = JsonSerializer.Deserialize<RoomTemplate>(data, new JsonSerializerOptions { IncludeFields = true });
-        var Cells = new Cell[RoomTemplate.GridSize.X, RoomTemplate.GridSize.Y];
-        foreach(var Cell in RoomTemplate.Cells)
+            var file = Godot.FileAccess.Open("user://SavedRooms/" + Path.Combine(roomName, "data.json"), Godot.FileAccess.ModeFlags.Read);
+            var data = file.GetAsText();
+            file.Close();
+            var path = "user://SavedRooms/" + Path.Combine(roomName, "map.png");
+            ImageTexture texture = null;
+            if(Godot.FileAccess.FileExists(path))
+            {
+                var image = new Image();
+                var err = image.Load(path);
+                texture = ImageTexture.CreateFromImage(image);
+            }
+            var RoomTemplate = JsonSerializer.Deserialize<RoomTemplate>(data, new JsonSerializerOptions { IncludeFields = true });
+            var Cells = new Cell[RoomTemplate.GridSize.X, RoomTemplate.GridSize.Y];
+            foreach(var Cell in RoomTemplate.Cells)
+            {
+                Cells[(int)Cell.position.X, (int)Cell.position.Y] = Cell;
+            }
+            return (new Room(new Vector2(RoomTemplate.GridPosition.X, RoomTemplate.GridPosition.Y), RoomTemplate.GridSize, RoomTemplate.ButtonSize, RoomTemplate.Name, Cells), texture, false);
+        } else
         {
-            Cells[(int)Cell.position.X, (int)Cell.position.Y] = Cell;
+            var defaultpath = "res://Defaults/Rooms/" + roomName;
+            var file = Godot.FileAccess.Open(defaultpath + "/data.json", Godot.FileAccess.ModeFlags.Read);
+            var data = file.GetAsText();
+            file.Close();
+            var mapPath = defaultpath + "/map.png";
+            ImageTexture texture = null;
+            if(Godot.FileAccess.FileExists(mapPath))
+            {
+                Texture2D texture2d = ResourceLoader.Load<Texture2D>(mapPath);
+                var image = texture2d.GetImage();
+                texture = ImageTexture.CreateFromImage(image);
+            }
+            var RoomTemplate = JsonSerializer.Deserialize<RoomTemplate>(data, new JsonSerializerOptions { IncludeFields = true });
+            var Cells = new Cell[RoomTemplate.GridSize.X, RoomTemplate.GridSize.Y];
+            foreach(var Cell in RoomTemplate.Cells)
+            {
+                Cells[(int)Cell.position.X, (int)Cell.position.Y] = Cell;
+            }
+            return (new Room(new Vector2(RoomTemplate.GridPosition.X, RoomTemplate.GridPosition.Y), RoomTemplate.GridSize, RoomTemplate.ButtonSize, RoomTemplate.Name, Cells), texture, true);
         }
-        return (new Room(new Vector2(RoomTemplate.GridPosition.X, RoomTemplate.GridPosition.Y), RoomTemplate.GridSize, RoomTemplate.ButtonSize, RoomTemplate.Name, Cells), texture);
     }
 
     public static void DeleteRoom(string roomName)

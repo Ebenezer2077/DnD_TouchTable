@@ -71,11 +71,12 @@ public partial class RoomPlayer : Panel
     private void LoadRoom(string name)
     {
         var roomData = LoadRoomTemplatesProvider.LoadRoom(name);
+        SaveRoomButton.Disabled = roomData.isDefault;
         buttonSize = roomData.room.ButtonSize;
         var GridPosition = roomData.room.GridPosition;
         var columns = (int)roomData.room.GridSize.X;
         var rows = (int)roomData.room.GridSize.Y;
-        var dimension = new Vector2I(rows, columns);
+        var dimension = new Vector2I(columns, rows);
         ParseGridData?.Invoke(dimension);
         UpdateCells?.Invoke(roomData.room.Cells);
         _map.Texture = roomData.background;
@@ -112,7 +113,7 @@ public partial class RoomPlayer : Panel
             };
             button.CustomMinimumSize = new Vector2(buttonSize, buttonSize);
             button.Playmode = true;
-            button._position = new Vector2I(i % rows, i / rows);
+            button._position = new Vector2I(i % columns, i / columns);
             _gridcontainer.AddChild(button);
         }
     }

@@ -4,7 +4,7 @@ using Godot;
 public partial class GameManager : Node
 {
     public SceneTree tree;
-    private Cell[,] Cells;
+    private Cell[,] Cells = new Cell[1,1];
     private Vector2I Gridsize;
     private Vector2I? grabbedFrom;
     private string RoomName;

@@ -122,6 +122,7 @@ public partial class RoomCreator : Panel
         ExitButton = GetNode<Button>("MarginContainer/Exit");
         ExitButton.Pressed += () => GetTree().ChangeSceneToFile("res://Szenen/MainMenu/MainMenu.tscn");
         InitLoadUnit();
+        ParseGridData?.Invoke(new Vector2I(1,1));
     }
     public override void _Input(InputEvent @event)
     {
@@ -186,6 +187,7 @@ public partial class RoomCreator : Panel
     {
         loadRoomMenu.Visible = false;
         var roomData = LoadRoomTemplatesProvider.LoadRoom(name);
+        SaveRoom.Disabled = roomData.isDefault;
         var room = roomData.room;
         RoomName = room.Name;
         InitColumns((int)room.GridSize.X);
@@ -276,7 +278,7 @@ public partial class RoomCreator : Panel
 
     private void RefreshContainer(GridContainer gridContainer)
     {
-        ParseGridData?.Invoke(new Vector2I(rows, columns));
+        ParseGridData?.Invoke(new Vector2I(columns, rows));
         foreach (var button in gridContainer.GetChildren())
         {
             gridContainer.RemoveChild(button);
@@ -297,7 +299,7 @@ public partial class RoomCreator : Panel
                 var isCellFree = (bool)IsCellFreeFunc?.Invoke(button._position);
                 button.OpenButtonpopup(position, isCellFree);
             };
-            button._position = new Vector2I(i % rows, i / rows);
+            button._position = new Vector2I(i % columns, i / columns);
             button.CustomMinimumSize = new Vector2(buttonSize, buttonSize);
             gridContainer.AddChild(button);
         }
