@@ -38,7 +38,7 @@ public class LoadRoomTemplatesProvider
         return list;
     }
     
-    public static (Room room, ImageTexture background) LoadRoom(string roomName)//only name not full directory
+    public static (Room room, ImageTexture background, bool isDefault) LoadRoom(string roomName)//only name not full directory
     {
         if(DirAccess.DirExistsAbsolute("user://SavedRooms/" + roomName))
         {
@@ -59,7 +59,7 @@ public class LoadRoomTemplatesProvider
             {
                 Cells[(int)Cell.position.X, (int)Cell.position.Y] = Cell;
             }
-            return (new Room(new Vector2(RoomTemplate.GridPosition.X, RoomTemplate.GridPosition.Y), RoomTemplate.GridSize, RoomTemplate.ButtonSize, RoomTemplate.Name, Cells), texture);
+            return (new Room(new Vector2(RoomTemplate.GridPosition.X, RoomTemplate.GridPosition.Y), RoomTemplate.GridSize, RoomTemplate.ButtonSize, RoomTemplate.Name, Cells), texture, false);
         } else
         {
             var defaultpath = "res://Defaults/Rooms/" + roomName;
@@ -80,7 +80,7 @@ public class LoadRoomTemplatesProvider
             {
                 Cells[(int)Cell.position.X, (int)Cell.position.Y] = Cell;
             }
-            return (new Room(new Vector2(RoomTemplate.GridPosition.X, RoomTemplate.GridPosition.Y), RoomTemplate.GridSize, RoomTemplate.ButtonSize, RoomTemplate.Name, Cells), texture);
+            return (new Room(new Vector2(RoomTemplate.GridPosition.X, RoomTemplate.GridPosition.Y), RoomTemplate.GridSize, RoomTemplate.ButtonSize, RoomTemplate.Name, Cells), texture, true);
         }
     }
 

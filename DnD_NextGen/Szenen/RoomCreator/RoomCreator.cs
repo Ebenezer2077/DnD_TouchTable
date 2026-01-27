@@ -187,6 +187,7 @@ public partial class RoomCreator : Panel
     {
         loadRoomMenu.Visible = false;
         var roomData = LoadRoomTemplatesProvider.LoadRoom(name);
+        SaveRoom.Disabled = roomData.isDefault;
         var room = roomData.room;
         RoomName = room.Name;
         InitColumns((int)room.GridSize.X);

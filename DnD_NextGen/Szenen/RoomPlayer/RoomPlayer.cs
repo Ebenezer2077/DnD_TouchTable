@@ -71,6 +71,7 @@ public partial class RoomPlayer : Panel
     private void LoadRoom(string name)
     {
         var roomData = LoadRoomTemplatesProvider.LoadRoom(name);
+        SaveRoomButton.Disabled = roomData.isDefault;
         buttonSize = roomData.room.ButtonSize;
         var GridPosition = roomData.room.GridPosition;
         var columns = (int)roomData.room.GridSize.X;
