@@ -276,7 +276,7 @@ public partial class RoomCreator : Panel
 
     private void RefreshContainer(GridContainer gridContainer)
     {
-        ParseGridData?.Invoke(new Vector2I(rows, columns));
+        ParseGridData?.Invoke(new Vector2I(columns, rows));
         foreach (var button in gridContainer.GetChildren())
         {
             gridContainer.RemoveChild(button);
@@ -297,7 +297,7 @@ public partial class RoomCreator : Panel
                 var isCellFree = (bool)IsCellFreeFunc?.Invoke(button._position);
                 button.OpenButtonpopup(position, isCellFree);
             };
-            button._position = new Vector2I(i % rows, i / rows);
+            button._position = new Vector2I(i % columns, i / columns);
             button.CustomMinimumSize = new Vector2(buttonSize, buttonSize);
             gridContainer.AddChild(button);
         }
