@@ -20,5 +20,8 @@ public static class PlayerManagerConnector
         roomCreator.DeleteObjectAction += gameManager.DeleteObject;
         roomCreator.ParsePlacedObject += gameManager.PlaceObject;
         roomCreator.SaveRoomAction += gameManager.SaveRoom;
+        roomCreator.UpdateCells += gameManager.LoadCells;
+
+        gameManager.PlaceObjectInUI += roomCreator.PlaceObjectInUI;
     }
 }

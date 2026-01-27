@@ -73,15 +73,8 @@ public partial class RoomPlayer : Panel
         for (var i = 0; i < columns * rows; i++)
         {
             var button = GD.Load<PackedScene>("res://Szenen/GridButton/GridButton.tscn").Instantiate<GridButton>();
-            //load entity here
             var cell = roomData.room.Cells[i % dimension.X, i / dimension.X];
-            if(cell.Object != null)
-            {
-                var type = cell.Object.basetype;
-                var texture = LoadUnitsProvider.LoadAllUnits().Find(x => x.Item1 == type).Item2;
-                ChangeUnitHelper.PlaceObject(button, roomData.room.Name, texture);
-            }
-            //end
+            if(cell.Object != null) ChangeUnitHelper.LoadObjectInButton(cell.Object, button);
             button._loadUnit = _loadUnit;
             button.MoveObject += (Vector2I position) =>
             {

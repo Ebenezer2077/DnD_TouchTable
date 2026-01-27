@@ -9,6 +9,7 @@ public partial class GameManager : Node
     private Vector2I? grabbedFrom;
     private string RoomName;
     public Action<Vector2I, Vector2I> SwapObjectsAction;
+    public Action<string, string, Vector2I> PlaceObjectInUI;
 
     public void InitCells(Vector2I dimension)
     {
@@ -23,6 +24,17 @@ public partial class GameManager : Node
     public void LoadCells(Cell[,] cells)
     {
         Cells = cells;
+    }
+    public Cell GetCell(Vector2I position)
+    {
+        return Cells[position.X, position.Y];
+    }
+
+    public void PlaceObject(string name, string basetype, Vector2I position)
+    {
+        var entity = new Entity(name, basetype);
+        PlaceObject(entity, position);
+        PlaceObjectInUI?.Invoke(entity.name, entity.basetype, position);
     }
 
     public void PlaceObject(Entity entity, Vector2I position)

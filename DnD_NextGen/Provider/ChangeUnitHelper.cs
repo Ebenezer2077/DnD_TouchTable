@@ -13,4 +13,11 @@ public static class ChangeUnitHelper                                            
         targetButton.TooltipText = null;
         targetButton.Icon = null;
     }
+
+    public static void LoadObjectInButton(Entity entity, GridButton button)
+    {
+        var type = entity.basetype;
+        var texture = LoadUnitsProvider.LoadAllUnits().Find(x => x.Item1 == type).Item2;
+        PlaceObject(button, entity.name, texture);
+    }
 }

@@ -2,7 +2,6 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 
 public partial class RoomCreator : Panel
 {
@@ -39,14 +38,16 @@ public partial class RoomCreator : Panel
     private string RoomName = "";
     private int StartingDistance = -1;
     private int StartingSize;
+    //private Room room = new Room(new Vector2(0,0), new Vector2(1,1), 50, "", new Cell[1,1]);
     private Vector2I StretchPositionOne;
     private Vector2I StretchPositionTwo;
     private Dictionary<int, Vector2I> Fingers = new Dictionary<int, Vector2I>();
     public Func<Vector2I, bool> IsCellFreeFunc;
     public Action<Vector2I> DeleteObjectAction;
-    public Action<Entity, Vector2I> ParsePlacedObject;
+    public Action<string, string, Vector2I> ParsePlacedObject;
     public Action<Vector2I> ParseGridData;
     public Action<Vector2, int, string, Texture2D> SaveRoomAction;
+    public Action<Cell[,]> UpdateCells;//maybe here error
     public override void _Ready()
     {
         _loadUnit = GetNode<PanelContainer>("LoadUnit");
@@ -61,9 +62,9 @@ public partial class RoomCreator : Panel
             LoadUnitTextfieldPopup.SetText(basetype);
             LoadUnitTextfieldPopup.onConfirm += (name) =>
             {
-                var entity = new Entity(name, basetype);
-                ChangeUnitHelper.PlaceObject(activeButton, entity.name, texture);
-                ParsePlacedObject?.Invoke(entity, activeButton._position);
+                //var entity = new Entity(name, basetype);
+                //ChangeUnitHelper.PlaceObject(activeButton, entity.name, texture);
+                ParsePlacedObject?.Invoke(name, basetype, activeButton._position);
                 _itemList.DeselectAll();
             };
         };
@@ -165,6 +166,17 @@ public partial class RoomCreator : Panel
             }
         }
     }
+    private GridButton GetButtonFromPosition(Vector2I position)
+    {
+        return (GridButton)gridContainer.GetChildren().First(x => ((GridButton)x)._position.Equals(position));
+    }
+
+    public void PlaceObjectInUI(string name, string basetype, Vector2I position)
+    {
+        var texture = LoadUnitsProvider.LoadUnit(basetype);
+        var button = GetButtonFromPosition(position);
+        ChangeUnitHelper.PlaceObject(button, name, texture);
+    }
     public override void _Process(double delta)
     {
         if (isGridPositioned && StickGridToCursor)
@@ -176,8 +188,9 @@ public partial class RoomCreator : Panel
     {
         gridContainer.Position = Position;
     }
-    private void LoadRoomFunc(string name)
+    private void LoadRoomFunc(string name)//maybe push loading to gameManager?
     {
+        //Need to update GameManager
         loadRoomMenu.Visible = false;
         var roomData = LoadRoomTemplatesProvider.LoadRoom(name);
         var room = roomData.room;
@@ -188,6 +201,19 @@ public partial class RoomCreator : Panel
         AdjustGridPosition(room.GridPosition);
         Map.Texture = roomData.background;
         RefreshContainer(gridContainer);
+        LoadUnitUI(room.Cells);
+        UpdateCells?.Invoke(room.Cells);
+    }
+
+    private void LoadUnitUI(Cell[,] cells)
+    {
+        foreach(var cell in cells)
+        {
+            if(cell.Object != null)
+            {
+                PlaceObjectInUI(cell.Object.name, cell.Object.basetype, new Vector2I((int)cell.position.X, (int)cell.position.Y));
+            }
+        }
     }
     private void PositionGridFunc()
     {
