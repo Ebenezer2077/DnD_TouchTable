@@ -122,6 +122,7 @@ public partial class RoomCreator : Panel
         ExitButton = GetNode<Button>("MarginContainer/Exit");
         ExitButton.Pressed += () => GetTree().ChangeSceneToFile("res://Szenen/MainMenu/MainMenu.tscn");
         InitLoadUnit();
+        ParseGridData?.Invoke(new Vector2I(1,1));
     }
     public override void _Input(InputEvent @event)
     {
