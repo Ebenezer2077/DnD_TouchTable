@@ -38,7 +38,6 @@ public partial class RoomCreator : Panel
     private string RoomName = "";
     private int StartingDistance = -1;
     private int StartingSize;
-    //private Room room = new Room(new Vector2(0,0), new Vector2(1,1), 50, "", new Cell[1,1]);
     private Vector2I StretchPositionOne;
     private Vector2I StretchPositionTwo;
     private Dictionary<int, Vector2I> Fingers = new Dictionary<int, Vector2I>();
@@ -47,7 +46,7 @@ public partial class RoomCreator : Panel
     public Action<string, string, Vector2I> ParsePlacedObject;
     public Action<Vector2I> ParseGridData;
     public Action<Vector2, int, string, Texture2D> SaveRoomAction;
-    public Action<Cell[,]> UpdateCells;//maybe here error
+    public Action<Cell[,]> UpdateCells;
     public override void _Ready()
     {
         _loadUnit = GetNode<PanelContainer>("LoadUnit");
@@ -62,8 +61,6 @@ public partial class RoomCreator : Panel
             LoadUnitTextfieldPopup.SetText(basetype);
             LoadUnitTextfieldPopup.onConfirm += (name) =>
             {
-                //var entity = new Entity(name, basetype);
-                //ChangeUnitHelper.PlaceObject(activeButton, entity.name, texture);
                 ParsePlacedObject?.Invoke(name, basetype, activeButton._position);
                 _itemList.DeselectAll();
             };
@@ -190,7 +187,6 @@ public partial class RoomCreator : Panel
     }
     private void LoadRoomFunc(string name)//maybe push loading to gameManager?
     {
-        //Need to update GameManager
         loadRoomMenu.Visible = false;
         var roomData = LoadRoomTemplatesProvider.LoadRoom(name);
         var room = roomData.room;
