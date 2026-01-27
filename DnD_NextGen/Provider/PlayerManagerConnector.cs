@@ -10,6 +10,7 @@ public static class PlayerManagerConnector
         roomPlayer.MoveObject += gameManager.MoveObject;
         roomPlayer.DeleteObjectAction += gameManager.DeleteObject;
         roomPlayer.UpdateCells += gameManager.LoadCells;
+        roomPlayer.SaveRoomAction += gameManager.SaveRoom;
         gameManager.SwapObjectsAction += roomPlayer.SwapObjects;
     }
 

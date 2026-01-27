@@ -24,10 +24,10 @@ public partial class RoomCreator : Panel
     private Button LoadMap;
     private Button LoadRoom;
     private Button ConfirmPlace;
+    private Button ExitButton;
     private TextureRect Map;
     private PanelContainer _loadUnit;
     private ItemList _itemList;
-
     private GridButton activeButton;
 
     private int columns = 1;
@@ -119,18 +119,15 @@ public partial class RoomCreator : Panel
         };
         ConfirmPlace = GetNode<Button>("MarginContainer/VBoxContainer4/Confirm");
         ConfirmPlace.Pressed += PositionGridFunc;
+        ExitButton = GetNode<Button>("MarginContainer/Exit");
+        ExitButton.Pressed += () => GetTree().ChangeSceneToFile("res://Szenen/MainMenu/MainMenu.tscn");
         InitLoadUnit();
     }
     public override void _Input(InputEvent @event)
     {
-        if (@event.IsActionPressed("Back"))
-        {
-            GetTree().ChangeSceneToFile("res://Szenen/MainMenu/MainMenu.tscn");
-        }
-        if (isGridPositioned && @event is InputEventMouseButton inputEventMouseButton && inputEventMouseButton.IsPressed())
-        {
-            StickGridToCursor = false;
-        }
+        if (@event.IsActionPressed("Back")) GetTree().ChangeSceneToFile("res://Szenen/MainMenu/MainMenu.tscn");
+        
+        if (isGridPositioned && @event is InputEventMouseButton inputEventMouseButton && inputEventMouseButton.IsPressed()) StickGridToCursor = false;
 
         if(@event is InputEventScreenTouch touch && isGridPositioned) {
             if(touch.IsPressed())

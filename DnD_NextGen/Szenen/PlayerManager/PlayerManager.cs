@@ -1,7 +1,4 @@
 using Godot;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 public partial class PlayerManager : PanelContainer
@@ -9,6 +6,7 @@ public partial class PlayerManager : PanelContainer
     private ItemList itemList;
     private Button createNew;
     private Button delete;
+    private Button exitButton;
     private FileDialog fileDialog;
     private TextFieldPopup textFieldPopup;
     private string resourcePath = "";
@@ -33,7 +31,7 @@ public partial class PlayerManager : PanelContainer
         textFieldPopup.onConfirm += (name) =>
         {
             LoadUnitsProvider.SaveUnit(resourcePath, name);
-            InitRoomList();
+            InitUnitList();
         };
         fileDialog = GetNode<FileDialog>("FileDialog");
         fileDialog.Access = FileDialog.AccessEnum.Filesystem;
@@ -43,7 +41,9 @@ public partial class PlayerManager : PanelContainer
             textFieldPopup.Visible = true;
             resourcePath = path;
         };
-        InitRoomList();
+        exitButton = GetNode<Button>("MarginContainer/VBoxContainer/Exit");
+        exitButton.Pressed += () => GetTree().ChangeSceneToFile("res://Szenen/MainMenu/MainMenu.tscn");
+        InitUnitList();
     }
 
     public override void _Process(double delta)
@@ -59,13 +59,13 @@ public partial class PlayerManager : PanelContainer
         if (@event.IsActionPressed("Back")) GetTree().ChangeSceneToFile("res://Szenen/MainMenu/MainMenu.tscn");
     }
 
-    private void InitRoomList()
+    private void InitUnitList()
     {
         itemList.Clear();
         var unitList = LoadUnitsProvider.LoadAllUnits();
-        foreach (var room in unitList)
+        foreach (var unit in unitList)
         {
-            itemList.AddItem(room.Item1, room.Item2);
+            itemList.AddItem(unit.basetype, unit.icon);
         }
     }
 }

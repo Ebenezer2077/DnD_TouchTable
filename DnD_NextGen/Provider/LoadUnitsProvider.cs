@@ -1,19 +1,18 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection.Metadata;
 using Godot;
 
-public class LoadUnitsProvider//rename
+public class LoadUnitsProvider
 {
-    public static List<(string, ImageTexture)> LoadAllUnits()
+    public static List<(string basetype, ImageTexture icon)> LoadAllUnits()
     {
         var dir = DirAccess.Open("user://SavedUnits");
         var list = new List<(string, ImageTexture)>();
         
-        foreach (var room in dir.GetDirectories())
+        foreach (var unit in dir.GetDirectories())
         {
-            var path = Path.Combine("user://SavedUnits", room);
+            var path = Path.Combine("user://SavedUnits", unit);
             var file = DirAccess.GetFilesAt(path).First(x => x.Contains(".png") || x.Contains(".jpg"));
             if (Godot.FileAccess.FileExists(Path.Combine(path, file)))                                       //can be optimized
             {
@@ -21,13 +20,13 @@ public class LoadUnitsProvider//rename
                 var err = image.Load(Path.Combine(path, file));
                 var texture = ImageTexture.CreateFromImage(image);
                 texture.SetSizeOverride(new Vector2I(100, 100));
-                list.Add((room, texture));
+                list.Add((unit, texture));
             }
             else
             {
                 var image = Image.CreateEmpty(100, 100, false, Image.Format.Rgba8);
                 var texture = ImageTexture.CreateFromImage(image);
-                list.Add((room, texture));
+                list.Add((unit, texture));
             }
         }
         return list;
