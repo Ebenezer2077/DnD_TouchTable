@@ -6,7 +6,7 @@ using Godot;
 
 public class LoadUnitsProvider//rename
 {
-    public static List<(string, ImageTexture)> LoadAllUnits()
+    public static List<(string basetype, ImageTexture icon)> LoadAllUnits()
     {
         var dir = DirAccess.Open("user://SavedUnits");
         var list = new List<(string, ImageTexture)>();
