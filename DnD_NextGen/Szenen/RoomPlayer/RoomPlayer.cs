@@ -8,17 +8,20 @@ public partial class RoomPlayer : Panel
     private TextureRect _map;
     private GridContainer _gridcontainer;
     private LoadRoomMenu _loadRoomMenu;
-    private PopupMenu _popupMenu;
     private TextFieldPopup _textFieldPopup;
     private PanelContainer _loadUnit;
     private ItemList _itemList;
     private GridButton _activeButton;
+    private Button SaveRoomButton;
+    private string RoomName;
+    private int buttonSize;
     public Action<Vector2I> DeleteObjectAction;
     public Action<Vector2I> ParseGridData;
     public Action<Entity, Vector2I> ParsePlacedObject;
     public Action<Vector2I> MoveObject;
     public Func<Vector2I, bool> IsCellFreeFunc;
     public Action<Cell[,]> UpdateCells;
+    public Action<Vector2, int, string, Texture2D> SaveRoomAction;
     public override void _Ready()
     {
         _textFieldPopup = GetNode<TextFieldPopup>("TextFieldPopup");
@@ -39,15 +42,20 @@ public partial class RoomPlayer : Panel
                 _itemList.DeselectAll();
             };
         };
-        _popupMenu = GetNode<PopupMenu>("PopupMenu");
         _map = GetNode<TextureRect>("Map");
         _gridcontainer = GetNode<GridContainer>("GridContainer");
         _loadRoomMenu = GetNode<LoadRoomMenu>("LoadRoomMenu");
         _loadRoomMenu.InitRoomList();
         _loadRoomMenu.LoadRoom += (name) =>
         {
+            RoomName = name;
             LoadRoom(name);
             _loadRoomMenu.Visible = false;
+        };
+        SaveRoomButton = GetNode<Button>("MarginContainer/SaveRoom");
+        SaveRoomButton.Pressed += () =>
+        {
+            SaveRoomAction?.Invoke(_gridcontainer.Position, buttonSize, RoomName, _map.Texture);
         };
         InitLoadUnit();
     }
@@ -57,10 +65,10 @@ public partial class RoomPlayer : Panel
         if (@event.IsActionPressed("Back")) GetTree().ChangeSceneToFile("res://Szenen/MainMenu/MainMenu.tscn");
     }
 
-    private void LoadRoom(string name)//need to load objects 
+    private void LoadRoom(string name)
     {
         var roomData = LoadRoomTemplatesProvider.LoadRoom(name);
-        var buttonSize = roomData.room.ButtonSize;
+        buttonSize = roomData.room.ButtonSize;
         var GridPosition = roomData.room.GridPosition;
         var columns = (int)roomData.room.GridSize.X;
         var rows = (int)roomData.room.GridSize.Y;
