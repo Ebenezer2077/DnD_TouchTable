@@ -5,6 +5,7 @@ public partial class MainMenu : PanelContainer
     private Button _playButton;
     private Button _managePlayers;
     private Button _createRoomButton;
+    private Button _exitGameButton;
     private GameManager _gameManager;
 
     public override void _Ready()
@@ -28,6 +29,8 @@ public partial class MainMenu : PanelContainer
             GetTree().CurrentScene.QueueFree();
             GetTree().CurrentScene = createRoom;
         };
+        _exitGameButton = GetNode<Button>("MarginContainer2/VBoxContainer/Exit");
+        _exitGameButton.Pressed += () => GetTree().Quit(0);
         InitUserDirectory();
     }
 

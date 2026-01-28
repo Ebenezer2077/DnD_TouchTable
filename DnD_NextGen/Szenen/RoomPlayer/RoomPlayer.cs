@@ -14,6 +14,7 @@ public partial class RoomPlayer : Panel
     private GridButton _activeButton;
     private Button SaveRoomButton;
     private Button ExitButton;
+    private Button CancelLoadUnit;
     private string RoomName;
     private int buttonSize;
     public Action<Vector2I> DeleteObjectAction;
@@ -60,6 +61,8 @@ public partial class RoomPlayer : Panel
         };
         ExitButton = GetNode<Button>("MarginContainer/Exit");
         ExitButton.Pressed += () => GetTree().ChangeSceneToFile("res://Szenen/MainMenu/MainMenu.tscn");
+        CancelLoadUnit = GetNode<Button>("LoadUnit/CancelLoadUnit");
+        CancelLoadUnit.Pressed += () => _loadUnit.Visible = false;
         InitLoadUnit();
     }
 

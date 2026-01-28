@@ -186,7 +186,6 @@ visible = false
 layout_mode = 1
 
 [node name="LoadUnit" type="PanelContainer" parent="."]
-visible = false
 custom_minimum_size = Vector2(600, 0)
 layout_mode = 1
 anchors_preset = 8
@@ -205,6 +204,12 @@ grow_vertical = 2
 clip_contents = false
 custom_minimum_size = Vector2(0, 600)
 layout_mode = 2
+
+[node name="CancelLoadUnit" type="Button" parent="LoadUnit"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+text = "Cancel"
 
 [node name="LoadUnitTextfieldPopup" parent="." instance=ExtResource("3_djl0u")]
 visible = false

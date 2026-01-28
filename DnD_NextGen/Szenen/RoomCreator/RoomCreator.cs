@@ -25,6 +25,7 @@ public partial class RoomCreator : Panel
     private Button LoadRoom;
     private Button ConfirmPlace;
     private Button ExitButton;
+    private Button CancleLoadUnit;
     private TextureRect Map;
     private PanelContainer _loadUnit;
     private ItemList _itemList;
@@ -121,6 +122,8 @@ public partial class RoomCreator : Panel
         ConfirmPlace.Pressed += PositionGridFunc;
         ExitButton = GetNode<Button>("MarginContainer/Exit");
         ExitButton.Pressed += () => GetTree().ChangeSceneToFile("res://Szenen/MainMenu/MainMenu.tscn");
+        CancleLoadUnit = GetNode<Button>("LoadUnit/CancelLoadUnit");
+        CancleLoadUnit.Pressed += () => _loadUnit.Visible = false;
         InitLoadUnit();
         ParseGridData?.Invoke(new Vector2I(1,1));
     }
