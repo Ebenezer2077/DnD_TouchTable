@@ -143,7 +143,11 @@ public partial class RoomCreator : Panel
                     StartingSize = buttonSize;
                 }
             }
-            if(touch.IsReleased()) Fingers.Remove(touch.Index);
+            if(touch.IsReleased()) 
+            {
+                Fingers.Remove(touch.Index);
+                PositionGridFunc();//try this
+            }
         }
         if(@event is InputEventScreenDrag drag && isGridPositioned)
         {
