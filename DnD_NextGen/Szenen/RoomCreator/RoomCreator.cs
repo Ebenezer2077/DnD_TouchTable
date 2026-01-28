@@ -309,7 +309,7 @@ public partial class RoomCreator : Panel
         var list = LoadUnitsProvider.LoadAllUnits();
         foreach(var unit in list)
         {
-            _itemList.AddItem(unit.Item1, unit.Item2);
+            _itemList.AddItem(unit.basetype, unit.icon);
         }
     }
 }

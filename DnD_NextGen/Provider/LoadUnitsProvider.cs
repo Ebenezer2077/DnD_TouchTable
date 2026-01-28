@@ -13,12 +13,10 @@ public class LoadUnitsProvider
 
         foreach (var unit in defaultDir.GetDirectories())
         {
-            var path = "res://Defaults/Units/" + unit;
-            var file = DirAccess.GetFilesAt(path).First(x => x.Contains(".png") || x.Contains(".jpg"));
-            if (Godot.FileAccess.FileExists(path + "/" + file))                                      //can be optimized
+            var path = $"res://Defaults/Units/{unit}/{unit}.png";
+            if (ResourceLoader.Exists(path))                                      //can be optimized
             {
-                var loadpath = path + "/" + file;
-                Texture2D texture2d = ResourceLoader.Load<Texture2D>(loadpath);
+                Texture2D texture2d = ResourceLoader.Load<Texture2D>(path);
                 var image = texture2d.GetImage();
                 var texture = ImageTexture.CreateFromImage(image);
                 texture.SetSizeOverride(new Vector2I(100, 100));
@@ -34,13 +32,11 @@ public class LoadUnitsProvider
         
         foreach (var unit in dir.GetDirectories())
         {
-            var path = "user://SavedUnits/" + unit;
-            var file = DirAccess.GetFilesAt(path).First(x => x.Contains(".png") || x.Contains(".jpg"));
-            if (Godot.FileAccess.FileExists(path + "/" + file))                                       //can be optimized
+            var path = $"user://SavedUnits/{unit}/{unit}.png";
+            if (Godot.FileAccess.FileExists(path))                                       //can be optimized
             {
-                var loadpath = path + "/" + file;
                 var image = new Image();
-                var err = image.Load(Path.Combine(path, file));
+                var err = image.Load(path);
                 var texture = ImageTexture.CreateFromImage(image);
                 texture.SetSizeOverride(new Vector2I(100, 100));
                 list.Add((unit, texture));
@@ -61,8 +57,7 @@ public class LoadUnitsProvider
         if(DirAccess.DirExistsAbsolute(path))
         {
             var image = new Image();
-            var file = DirAccess.GetFilesAt(path).FirstOrDefault(x => x.Contains(".png") || x.Contains(".jpg"));
-            var err = image.Load(path + "/" + file);
+            var err = image.Load($"user://SavedUnits/{basetype}/{basetype}.png");
             var texture = ImageTexture.CreateFromImage(image);
             texture.SetSizeOverride(new Vector2I(100, 100));
             return texture;
@@ -70,8 +65,7 @@ public class LoadUnitsProvider
         var defaultPath = "res://Defaults/Units/" + basetype;
         if(DirAccess.DirExistsAbsolute(defaultPath))
         {
-            var defaultFile = DirAccess.GetFilesAt(defaultPath).FirstOrDefault(x => x.Contains(".png") || x.Contains(".jpg"));
-            Texture2D texture2d = ResourceLoader.Load<Texture2D>(defaultPath + "/" + defaultFile);
+            Texture2D texture2d = ResourceLoader.Load<Texture2D>($"res://Defaults/Units/{basetype}/{basetype}.png");
             var image = texture2d.GetImage();
             var texture = ImageTexture.CreateFromImage(image);
             texture.SetSizeOverride(new Vector2I(100, 100));

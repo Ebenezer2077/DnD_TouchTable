@@ -17,7 +17,7 @@ public static class ChangeUnitHelper                                            
     public static void LoadObjectInButton(Entity entity, GridButton button)
     {
         var type = entity.basetype;
-        var texture = LoadUnitsProvider.LoadAllUnits().Find(x => x.Item1 == type).Item2;
+        var texture = LoadUnitsProvider.LoadUnit(type);
         PlaceObject(button, entity.name, texture);
     }
 }

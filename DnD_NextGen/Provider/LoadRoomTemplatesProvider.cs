@@ -68,7 +68,7 @@ public class LoadRoomTemplatesProvider
             file.Close();
             var mapPath = defaultpath + "/map.png";
             ImageTexture texture = null;
-            if(Godot.FileAccess.FileExists(mapPath))
+            if(ResourceLoader.Exists(mapPath))
             {
                 Texture2D texture2d = ResourceLoader.Load<Texture2D>(mapPath);
                 var image = texture2d.GetImage();
