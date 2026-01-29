@@ -36,6 +36,7 @@ public partial class RoomPlayer : Panel
             var texture = _itemList.GetItemIcon((int)index);
             _textFieldPopup.Visible = true;
             _textFieldPopup.SetText(basetype);
+            _textFieldPopup.SetTitel("Load Unit As");
             _textFieldPopup.onConfirm += (name) =>
             {
                 var entity = new Entity(name, basetype);

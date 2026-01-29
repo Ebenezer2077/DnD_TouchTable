@@ -95,7 +95,7 @@ public class LoadUnitsProvider
         if (dir == null) return;
         while (!dir.GetFiles().IsEmpty())
         {
-            dir.Remove(path + dir.GetFiles().First());
+            dir.Remove($"{path}/{dir.GetFiles().First()}");
         }
         dir.Remove(path);
     }

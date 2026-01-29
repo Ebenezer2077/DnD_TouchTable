@@ -58,6 +58,7 @@ public partial class RoomCreator : Panel
             _loadUnit.Visible = false;
             var basetype = _itemList.GetItemText((int)index);
             var texture = _itemList.GetItemIcon((int)index);
+            LoadUnitTextfieldPopup.SetTitel("Load Unit As");
             LoadUnitTextfieldPopup.Visible = true;
             LoadUnitTextfieldPopup.SetText(basetype);
             LoadUnitTextfieldPopup.onConfirm += (name) =>
@@ -146,7 +147,7 @@ public partial class RoomCreator : Panel
             if(touch.IsReleased()) 
             {
                 Fingers.Remove(touch.Index);
-                PositionGridFunc();//try this
+                PositionGridFunc();
             }
         }
         if(@event is InputEventScreenDrag drag && isGridPositioned)

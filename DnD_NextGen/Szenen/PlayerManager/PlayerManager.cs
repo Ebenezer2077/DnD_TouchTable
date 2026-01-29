@@ -38,6 +38,7 @@ public partial class PlayerManager : PanelContainer
         fileDialog.FileMode = FileDialog.FileModeEnum.OpenFile;
         fileDialog.FileSelected += async (path) =>
         {
+            textFieldPopup.SetTitel("Save Entity As");
             textFieldPopup.Visible = true;
             resourcePath = path;
         };

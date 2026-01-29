@@ -3,12 +3,14 @@ using System;
 
 public partial class TextFieldPopup : PanelContainer
 {
+    private RichTextLabel Titel;
     private Button Cancel;
     private Button Confirm;
     private LineEdit lineEdit;
     public Action<string> onConfirm;
     public override void _Ready()
     {
+        Titel = GetNode<RichTextLabel>("MarginContainer/VBoxContainer/RichTextLabel");
         Cancel = GetNode<Button>("MarginContainer/VBoxContainer/HBoxContainer/Cancel");
         Cancel.Pressed += () => {
             Visible = false;
@@ -24,5 +26,9 @@ public partial class TextFieldPopup : PanelContainer
     public void SetText(string text)
     {
         lineEdit.Text = text;
+    }
+    public void SetTitel(string titel)
+    {
+        Titel.Text = titel;
     }
 }

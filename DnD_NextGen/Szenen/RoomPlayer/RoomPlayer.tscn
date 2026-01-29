@@ -27,6 +27,7 @@ theme_override_constants/v_separation = 0
 layout_mode = 1
 
 [node name="LoadUnit" type="PanelContainer" parent="."]
+visible = false
 custom_minimum_size = Vector2(600, 0)
 layout_mode = 1
 anchors_preset = 8
